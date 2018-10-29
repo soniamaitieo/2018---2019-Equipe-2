@@ -48,18 +48,43 @@ def choose_gap_op(pssm1,pssm2):
         L.append(dynamic_alignment (pssm1,pssm2, gap))
     return(L)
 
-all_DA = choose_gap_op(pssm1,pssm2)
 
 
-# Import the libraries
-import matplotlib.pyplot as plt
+all_DA = choose_gap_op(PSSM1,PSSM2)
 
-# matplotlib histogram
-plt.hist(list(all_DA[1][3]), color = 'blue', edgecolor = 'black',
+
+
+gap1 = [j for i in all_DA[0].tolist() for j in i]
+gap2 = [j for i in all_DA[1].tolist() for j in i]
+gap3 = [j for i in all_DA[2].tolist() for j in i]
+gap4 = [j for i in all_DA[3].tolist() for j in i]
+gap5 = [j for i in all_DA[4].tolist() for j in i]
+
+all_scores_gaps=[gap1,gap2,gap3,gap4,gap5]
+all_scores_gaps_list=[j for i in truc for j in i]
+
+# matplotlib histogram : distribution des scores 
+plt.hist(all_scores_gaps_list , color = 'blue', edgecolor = 'black',
          bins = int(180/5))
 
 
+from statistics import mean
+from statistics import var
+mean(trucc)
+np.var(trucc)
 
+
+
+if __name__ == "__main__":
+    name_fasta1,seq1,PSSM1=read_pssm("/home/soniamai/Bureau/2018---2019-Equipe-2/data/query_small.aamtx")
+    name_fasta2,seq2,PSSM2=read_pssm("/home/soniamai/Bureau/2018---2019-Equipe-2/data/template_small.aamtx")
+    #score_between_2_pssm(PSSM1,PSSM2)
+    DA = dynamic_alignment(PSSM1,PSSM2, -2)
+    caca = dynamic_alignment(PSSM1,PSSM2, -2)
+
+
+
+######################a revoir ############################################
  
 def score_shuffle_pssm(PSSM1,PSSM2) :
     pssm1shuffle  = np.array(PSSM1)
@@ -74,10 +99,7 @@ def n_random_scores(n) :
         print(score_shuffle_pssm(PSSM1,PSSM2))
     
     
+    #####################################################################
+    
 
     
-if __name__ == "__main__":
-    name_fasta1,seq1,PSSM1=read_pssm("/home/soniamai/Bureau/2018---2019-Equipe-2/data/query_small.aamtx")
-    name_fasta2,seq2,PSSM2=read_pssm("/home/soniamai/Bureau/2018---2019-Equipe-2/data/template_small.aamtx")
-    #score_between_2_pssm(PSSM1,PSSM2)
-    DA = dynamic_alignment(PSSM1,PSSM2, -2)
