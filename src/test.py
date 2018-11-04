@@ -110,10 +110,12 @@ def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
     done_list = [] # Entry (str0,str1)
     backlink_used = [[False for x in range(len(seq[0]) + 1)]
                       for x in range(len(seq[1]) + 1)]
+    score=0
     while todo_list:
         row, col, str0, str1 = todo_list.pop()
         backlinks = sm.get_backlinks(row, col)
         if True in backlinks.values(): # If some back-link exists.
+            score=score+sm.get_score(row,col)
             backlink_used[row][col] = True # Mark linked cells as used as we go.
             if backlinks["diagonal"]:
                 todo_list.append([row - 1, col - 1, seq[0][col - 1] + str0,
@@ -132,6 +134,7 @@ def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
             if not backlink_used[row][col]:
                 sm.remove_backlinks(row, col)
 
+    print(score)
     return done_list
 
 def read_pssm(path) :
