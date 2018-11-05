@@ -26,19 +26,19 @@ def print_bottom_border(columns):
     output_row = "-+"
     for column in range(0, columns):
         output_row += "----+"
-    print output_row
+    print(output_row)
 
 def print_matrix(sm):
     print(sm.get_backlinks(10, 17))
     '''Prints the given ScoringMatrix to the terminal.'''
     # Sequence on top
-    print "Dynamic programming table:"
+    print("Dynamic programming table:")
     output_row = " |    |"
     top_sequence = sm.get_top_sequence()
     left_sequence = sm.get_left_sequence()
     for c in top_sequence:
         output_row += "   " + c + "|"
-    print output_row
+    print(output_row)
     print_bottom_border(sm.get_columns())
     # All other rows
     for row in range(0, sm.get_rows()):
@@ -49,7 +49,7 @@ def print_matrix(sm):
             output_row += "\\ " if bl["diagonal"] else "  "
             output_row += "^ " if bl["up"] else "  "
             output_row += "|"
-        print output_row
+        print(output_row)
         # Bottom half of row
         output_row = left_sequence[row - 1] if row >= 1 else " "
         output_row += "|"
@@ -58,7 +58,7 @@ def print_matrix(sm):
             output_row += "<" if bl["left"] else " "
             output_row += "{0: >3}".format(sm.get_score(row, column))
             output_row += "|"
-        print output_row
+        print(output_row)
         # Bottom border of row
         print_bottom_border(sm.get_columns())
 
@@ -68,7 +68,7 @@ def print_alignments(alignment_list):
     i = 1
     while alignment_list:
         seq = alignment_list.pop()
-        print "Alignment #", str(i)
+        print("Alignment #"+ str(i))
         for s in seq:
-            print s
+            print(s)
         i += 1

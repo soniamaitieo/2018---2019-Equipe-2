@@ -98,7 +98,7 @@ class ScoringMatrix:
         try:
             return self.matrix[row][column].get_score()
         except IndexError:
-            print "IndexError in get_score({0!s}, {1!s})".format(row, column)
+            print("IndexError in get_score({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def set_score(self, row, column, score):
@@ -106,7 +106,7 @@ class ScoringMatrix:
         try:
             self.matrix[row][column].set_score(score)
         except IndexError:
-            print "IndexError in set_score({0!s}, {1!s})".format(row, column)
+            print("IndexError in set_score({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def get_backlinks(self, row, column):
@@ -115,7 +115,7 @@ class ScoringMatrix:
         try:
             return self.matrix[row][column].get_backlinks()
         except IndexError:
-            print "IndexError in get_backlinks({0!s}, {1!s})".format(row, column)
+            print("IndexError in get_backlinks({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def add_up_backlink(self, row, column):
@@ -123,7 +123,7 @@ class ScoringMatrix:
         try:
             self.matrix[row][column].add_up_backlink()
         except IndexError:
-            print "IndexError in add_up_backlink({0!s}, {1!s})".format(row, column)
+            print("IndexError in add_up_backlink({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def add_diagonal_backlink(self, row, column):
@@ -131,7 +131,7 @@ class ScoringMatrix:
         try:
             self.matrix[row][column].add_diagonal_backlink()
         except IndexError:
-            print "IndexError in add_diagonal_backlink({0!s}, {1!s})".format(row, column)
+            print("IndexError in add_diagonal_backlink({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def add_left_backlink(self, row, column):
@@ -139,7 +139,7 @@ class ScoringMatrix:
         try:
             self.matrix[row][column].add_left_backlink()
         except IndexError:
-            print "IndexError in add_left_backlink({0!s}, {1!s})".format(row, column)
+            print("IndexError in add_left_backlink({0!s}, {1!s})".format(row, column))
             exit(1)
 
     def remove_backlinks(self, row, column):
@@ -147,16 +147,6 @@ class ScoringMatrix:
         try:
             self.matrix[row][column].remove_backlinks()
         except IndexError:
-            print "IndexError in remove_backlinks({0!s}, {1!s})".format(row, column)
+            print("IndexError in remove_backlinks({0!s}, {1!s})".format(row, column))
             exit(1)
 
-    def match(self, row, col):
-        '''Returns True iff the corresponding characters in the sequences are
-        equal.
-        Note that the row and column of the matrix must be supplied, not the
-        character's indexes within their sequences directly.'''
-        try:
-            return self.left_sequence[row - 1] == self.top_sequence[col - 1]
-        except IndexError:
-            print "IndexError in match({0!s}, {1!s})".format(row, col)
-            exit(1)
