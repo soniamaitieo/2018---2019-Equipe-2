@@ -13,7 +13,7 @@ def score_between_2_pssm(v1,v2,mblos_path):
 
     for i in range(0,len(v1)) :
         for j in range(0,len(v2)):
-            score=score+v1[i]*v2[i]*m_blos[i][i]
+            score=score+v1[i]*v2[j]*m_blos[i][j]
     return score
 
 def dynamic_alignment (pssm1,pssm2, gap_score,mblos_path) :

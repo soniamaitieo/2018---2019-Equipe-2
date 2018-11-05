@@ -38,7 +38,8 @@ def score_between_2_pssm(v1,v2):
 
     for i in range(0,len(v1)) :
         for j in range(0,len(v2)):
-            score=score+v1[i]*v2[i]*m_blos[i][i]
+            score=score+v1[i]*v2[j]*m_blos[i][j]
+            print(m_blos[i][j])
     return score
 
 def initialize_edges(sm, alignment_is_global=False):
@@ -47,7 +48,7 @@ def initialize_edges(sm, alignment_is_global=False):
     Performs a semi-global alignment by default unless alignment_is_global is
     specified to be True.'''
     sm.set_score(0, 0, 0)
-    gap = gap_score if alignment_is_global else terminal_gap_score
+    gap = terminal_gap_score
     for i in range(1, sm.get_rows()):
         sm.set_score(i, 0, sm.get_score(i - 1, 0) + gap)
         sm.add_up_backlink(i, 0)
@@ -62,8 +63,8 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
     specified to be True.
     Based on pseudocode provided on page 54 of our textbook.'''
     initialize_edges(sm, alignment_is_global)
-    #print(sm.get_rows())
-    #print(sm.get_columns())
+    print(sm.get_rows())
+    print(sm.get_columns())
     #print(pssm1.shape)
     #print(pssm2.shape)
 
@@ -73,16 +74,12 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
             score_diagonal = 0
             match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
             score_diagonal = sm.get_score(i - 1, j - 1) + match
+            score_left = sm.get_score(i, j - 1) + gap_score
+            score_up = sm.get_score(i - 1, j) + gap_score
 
-            if (i == 0 or i == sm.get_rows() - 1) and not alignment_is_global:
-                score_left = sm.get_score(i, j - 1) + terminal_gap_score
-            else:
-                score_left = sm.get_score(i, j - 1) + gap_score
-            if (j == 0 or j == sm.get_columns() - 1) and not alignment_is_global:
-                score_up = sm.get_score(i - 1, j) + terminal_gap_score
-            else:
-                score_up = sm.get_score(i - 1, j) + gap_score
+
             max_score = max(score_diagonal, score_left, score_up)
+            print(match)
             sm.set_score(i, j, max_score)
             # Establish backlink(s)
             if max_score == score_diagonal:
@@ -105,8 +102,6 @@ def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
     print(last_col)
     print(last_row)
     todo_list = [[last_row,last_col,"",""]] # Entry (row,col,string0,string1)
-    print(todo_list)
-    print(sm.get_backlinks(10, 17))
     done_list = [] # Entry (str0,str1)
     backlink_used = [[False for x in range(len(seq[0]) + 1)]
                       for x in range(len(seq[1]) + 1)]
@@ -150,8 +145,8 @@ def read_pssm(path) :
 
 if __name__ == "__main__":
     cwd = os.getcwd()
-    name_fasta1,seq1,pssm1=read_pssm(cwd+"/data/query.aamtx")
-    name_fasta2,seq2,pssm2=read_pssm(cwd+"/data/template.aamtx")
+    name_fasta1,seq1,pssm1=read_pssm(cwd+"/data/query_small.aamtx")
+    name_fasta2,seq2,pssm2=read_pssm(cwd+"/data/query_small.aamtx")
     #score_between_2_pssm(PSSM1,PSSM2)
     mblos_path=cwd+"/data/BLOSUM62.txt"
 
@@ -166,5 +161,5 @@ if __name__ == "__main__":
 
     sm = ScoringMatrix(seq1, seq2)
     fill_matrix(sm,pssm1,pssm2)
-    #terminal_output.print_matrix(sm)
-    terminal_output.print_alignments(get_alignments(sm,pssm1,pssm2))
+    terminal_output.print_matrix(sm)
+    #terminal_output.print_alignments(get_alignments(sm,pssm1,pssm2))

@@ -29,7 +29,6 @@ def print_bottom_border(columns):
     print(output_row)
 
 def print_matrix(sm):
-    print(sm.get_backlinks(10, 17))
     '''Prints the given ScoringMatrix to the terminal.'''
     # Sequence on top
     print("Dynamic programming table:")
