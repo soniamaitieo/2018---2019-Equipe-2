@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import sys
 
-def get_query_name(filename):   ### ????
+def get_name(filename):
     with open (filename, 'r') as f:
         line = f.readline()
         query_nqme = line[1:]
@@ -113,7 +113,7 @@ def create_pssm(seq_list, wgt_list, bg_freq):
     for order in range(len(aa_orders[:-1])):
         for aa, freq in bg_freq.items():
             if aa_orders[order] == aa:
-                array[:, order] += bg_freq[aa]
+                array[:, order] += round(bg_freq[aa], 5)
     new_array = array/2
     return new_array
 
@@ -127,9 +127,7 @@ bg_freq = {"A":0.0789, "R":0.054, "N": 0.0413, "D": 0.0535, "C": 0.0150, "Q":0.0
            "P":0.0483, "S":0.0682, "T": 0.0541, "W": 0.0113, "Y":0.0303, "V":0.0673}
 
 # create a list containing all fasta sequences with gaps
-
 seqList = read_map(sys.argv[1])
-
 
 #create a dataframe with each row presenting a fasta sequences only with few gaps 
 pos_todel = get_cols_todel(seqList)
@@ -143,8 +141,6 @@ for i in range(1, (df.shape[1]+1)):
     name = "Pos"+ str(i)
     col_names.append(name)
 df.columns = col_names
-"""print("the obtained dataframe is :")
-print(df)"""
 
 # get the frequency of each columns (positions) 
 freq_list = get_freq(df)
@@ -160,9 +156,8 @@ M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
 
 pssm = pd.DataFrame(M_pssm)
 pssm.columns = list(aa_orders)
-query_name = get_query_name(sys.argv[1])
 
 with open(sys.argv[2], "w") as output_f:
-    output_f.write(query_name)
+    output_f.write(get_name(sys.argv[1]))
     output_f.write(conserved_seq[0]+"\n")
     pssm.to_string(output_f, header=False, index=False)

@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-def get_query_name(filename):
+def get_query_name(filename): 
     with open (filename, 'r') as f:
         line = f.readline()
         query_nqme = line[1:]
@@ -104,8 +104,8 @@ def create_pssm(seq_list, wgt_list, bg_freq):
     for order in range(len(aa_orders[:-1])):
         for aa, freq in bg_freq.items():
             if aa_orders[order] == aa:
-                array[:, order] += bg_freq[aa]
-    new_array = array/2    
+                array[:, order] += round(bg_freq[aa], 5)
+    new_array = array/2
     return new_array
 
 
@@ -133,8 +133,6 @@ for i in range(1, (df.shape[1]+1)):
     name = "Pos"+ str(i)
     col_names.append(name)
 df.columns = col_names
-print("the obtained dataframe is :")
-print(df)
 
 # get the frequency of each columns (positions) 
 freq_list = get_freq(df)
@@ -147,13 +145,10 @@ seq_wgts = get_weights(conserved_seq, freq_list)
 
 # create the pssm
 M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
-
 pssm = pd.DataFrame(M_pssm)
 pssm.columns = list(aa_orders)
-query_name = get_query_name("query.v2_mfasta")
-print(query_name, end="")
-print(conserved_seq[0])
-print("the obtained pssm is :")
-print(pssm)
 
-# next step , try to read template.map to perform pssm
+with open("query_output.aamtx", "w") as output_f:
+    output_f.write(get_query_name("query.v2_mfasta"))
+    output_f.write(conserved_seq[0]+"\n")
+    pssm.to_string(output_f, header=False, index=False)
