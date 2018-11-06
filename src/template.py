@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pandas as pd
+import sys
 
 def get_query_name(filename):   ### ????
     with open (filename, 'r') as f:
@@ -125,7 +128,8 @@ bg_freq = {"A":0.0789, "R":0.054, "N": 0.0413, "D": 0.0535, "C": 0.0150, "Q":0.0
 
 # create a list containing all fasta sequences with gaps
 
-seqList = read_map("test.map")
+seqList = read_map(sys.argv[1])
+
 
 #create a dataframe with each row presenting a fasta sequences only with few gaps 
 pos_todel = get_cols_todel(seqList)
@@ -156,9 +160,9 @@ M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
 
 pssm = pd.DataFrame(M_pssm)
 pssm.columns = list(aa_orders)
-query_name = get_query_name("test.map")
+query_name = get_query_name(sys.argv[1])
 
-with open("template_output.aamtx", "w") as output_f:
+with open(sys.argv[2], "w") as output_f:
     output_f.write(query_name)
     output_f.write(conserved_seq[0]+"\n")
     pssm.to_string(output_f, header=False, index=False)
