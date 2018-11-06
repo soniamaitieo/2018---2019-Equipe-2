@@ -21,7 +21,7 @@
 import os
 from scoring_matrix import ScoringMatrix
 import numpy as np
-
+import terminal_output
 
 gap_score = -1
 terminal_gap_score = 0
@@ -37,10 +37,10 @@ def score_between_2_pssm(v1,v2):
     m_blos=np.loadtxt(mblos_path)
 
     for i in range(0,len(v1)) :
-        for j in range(0,len(v2)):
-            score=score+v1[i]*v2[j]*m_blos[i][j]
-            print(m_blos[i][j])
-    return score
+        #for j in range(0,len(v2)):
+        score=score+v1[i]*v2[i]
+        #*m_blos[i][j]
+    return(score)
 
 def initialize_edges(sm, alignment_is_global=False):
     '''Sets up the top and left edges of the provided ScoringMatrix. This is
@@ -79,7 +79,6 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
 
 
             max_score = max(score_diagonal, score_left, score_up)
-            print(match)
             sm.set_score(i, j, max_score)
             # Establish backlink(s)
             if max_score == score_diagonal:
@@ -105,12 +104,10 @@ def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
     done_list = [] # Entry (str0,str1)
     backlink_used = [[False for x in range(len(seq[0]) + 1)]
                       for x in range(len(seq[1]) + 1)]
-    score=0
     while todo_list:
         row, col, str0, str1 = todo_list.pop()
         backlinks = sm.get_backlinks(row, col)
         if True in backlinks.values(): # If some back-link exists.
-            score=score+sm.get_score(row,col)
             backlink_used[row][col] = True # Mark linked cells as used as we go.
             if backlinks["diagonal"]:
                 todo_list.append([row - 1, col - 1, seq[0][col - 1] + str0,
@@ -129,8 +126,7 @@ def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
             if not backlink_used[row][col]:
                 sm.remove_backlinks(row, col)
 
-    print(score)
-    return done_list
+    return (done_list,sm.get_score(row,col))
 
 def read_pssm(path) :
     ##1ere ligne : nom du fasta
@@ -143,23 +139,40 @@ def read_pssm(path) :
         FH = np.loadtxt(lines)
     return(name_fasta,seq,FH)
 
+def make_output(name_fasta1,name_fasta2,alignment,score,seq1,seq2) :
+    name_output=name_fasta1.replace(">","").replace("\n","").replace("'","").replace(" ","")
+    name_template=name_fasta2.replace(">","").replace("\n","").replace("'","").replace(" ","")
+    print(name_output)
+    with open(name_output+".foldrec","w") as fillout :
+        seq = alignment.pop()
+        id=str(1)
+        fillout.write("*** HITS RANKED *** \n\n")
+        fillout.write("SEQUENCE QUERY FILE : " + name_output + ", "+ str(len(seq1))+"\n")
+        fillout.write("#| Score | Ungaped_score | Pvalue_Q | Pscore | PQTscore | P-Value_T | Q. Length |	 T. Length | Q. begin-end |  T. begin-end | HITS\n")
+        fillout.write("---------------------------------------------------------\n")
+        fillout.write("{:5}{:9}{:8}{:9}{:8}{:8}{:6}{:8}{:6}{:6}{:9}{:9}{:^18}".format(id,round(score,4),"X","X","X","X","X","X","X","X","X","X",name_template))
+        fillout.write("\n\n\n")
+        fillout.write("*** ALIGNMENTS DETAILS ***\n")
+        fillout.write("No "+id+"\n")
+        fillout.write("Alignment : "+ name_output + ", "+ str(len(seq1))+"\n")
+        fillout.write("Score : {:^10} | Normalized score : {:^10} | Query coverage : {:^10} | Identity : {:^10} | Gaps : {:^10} | SS Score : {:10} | Alignment length : {:10} | Corr score : {:10} \n".format(score,"X","X","X","X","X","X","X"))
+        fillout.write("{:10} {:3} {:} {:>8}\n".format("Query","1",seq[1],str(len(seq1))))
+        fillout.write("{:10} {:3} {:} {:>8}\n".format("Template","1",seq[0],str(len(seq2))))
+
+
+
+
 if __name__ == "__main__":
     cwd = os.getcwd()
-    name_fasta1,seq1,pssm1=read_pssm(cwd+"/data/query_small.aamtx")
-    name_fasta2,seq2,pssm2=read_pssm(cwd+"/data/query_small.aamtx")
+    name_fasta1,seq1,pssm1=read_pssm(cwd+"/data/query.aamtx")
+    name_fasta2,seq2,pssm2=read_pssm(cwd+"/data/template.aamtx")
     #score_between_2_pssm(PSSM1,PSSM2)
     mblos_path=cwd+"/data/BLOSUM62.txt"
 
-    n=pssm1.shape[0]
-    m=pssm2.shape[0]
-    seq_number1=""
-    seq_number2=""
-    for i in range(1,n) : seq_number1=seq_number1+str(i)
-    for j in range(1,m) : seq_number2=seq_number2+str(j)
-
-    import terminal_output
 
     sm = ScoringMatrix(seq1, seq2)
     fill_matrix(sm,pssm1,pssm2)
-    terminal_output.print_matrix(sm)
+    align,score=get_alignments(sm,pssm1,pssm2)
+    make_output(name_fasta1,name_fasta2,align,score,seq1,seq2)
+    #terminal_output.print_matrix(sm)
     #terminal_output.print_alignments(get_alignments(sm,pssm1,pssm2))
