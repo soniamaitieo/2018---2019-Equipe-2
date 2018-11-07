@@ -1,6 +1,8 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
+
+import sys
 
 def parse_psiblast_output(psiblastoutput , matchfile): 
     #Open psiblast file
@@ -46,6 +48,6 @@ def parse_psiblast_output(psiblastoutput , matchfile):
 
 
 if __name__ == "__main__":
-    psiblastoutput = '/home/soniamai/Bureau/2018---2019-Equipe-2/data/Cohesin.out'
-    matchfile = '/home/soniamai/Bureau/2018---2019-Equipe-2/results/Cohesin.mfasta'
-    parse_psiblast_output(psiblastoutput,matchfile)
+    blastoutput = sys.argv[1]
+    matchfile = sys.argv[2]
+    parse_psiblast_output(blastoutput, matchfile)
