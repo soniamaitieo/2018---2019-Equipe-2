@@ -23,6 +23,7 @@ from scoring_matrix import ScoringMatrix
 import numpy as np
 import terminal_output
 import glob
+import sys
 
 gap_score = -1
 terminal_gap_score = 0
@@ -180,7 +181,8 @@ def make_output(name_query,list_score,dico_all,seq1) :
 
 if __name__ == "__main__":
     cwd = os.getcwd()
-    name_fasta1,seq1,pssm1=read_pssm(cwd+"/../UBQ.attmx")
+    arg1=sys.argv[1]
+    name_fasta1,seq1,pssm1=read_pssm(cwd+"/"+arg1)
 
     dico_all={}
     list_score=[]
