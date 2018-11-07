@@ -169,7 +169,7 @@ def make_output(name_query,list_score,dico_all,seq1) :
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template","1","X"*len(seq[0]),str(len(seq[0].replace("_","")))))
                 fillout2.write("\n")
 
-                fillout2.write("{:10}\n".format("X"*len(seq[0])))
+                fillout2.write("{:10}\n".format("X "*len(seq[0])))
                 fillout2.write("\n")
 
                 del dico_all[score][0]
