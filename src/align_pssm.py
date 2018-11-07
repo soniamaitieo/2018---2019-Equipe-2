@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 # This file is part of sequence-aligner.
 # Copyright (C) 2014 Christopher Kyle Horton <chorton@ltu.edu>
 
