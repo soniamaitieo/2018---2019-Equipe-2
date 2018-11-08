@@ -2,25 +2,8 @@
 
 # This file is part of sequence-aligner.
 # Copyright (C) 2014 Christopher Kyle Horton <chorton@ltu.edu>
+# Modified by Madeleine DE SOUSA
 
-# sequence-aligner is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# sequence-aligner is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with sequence-aligner. If not, see <http://www.gnu.org/licenses/>.
-
-
-# MCS 5603 Intro to Bioinformatics, Fall 2014
-# Christopher Kyle Horton (000516274), chorton@ltu.edu
-# Last modified: 11/6/2014
-import os
 from scoring_matrix import ScoringMatrix
 import numpy as np
 import terminal_output
@@ -90,8 +73,7 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
 def get_alignments(sm,pssm1,pssm2, alignment_is_global=False):
     '''Returns a list of the alignments generated from the scoring matrix.
     Performs a semi-global alignment by default unless alignment_is_global is
-    specified to be True.
-    Port of code from global-grid2.rb.'''
+    specified to be True.'''
     fill_matrix(sm,pssm1,pssm2, alignment_is_global)
     # Find the optimal alignment paths starting from the lower right corner.
     seq = (sm.get_top_sequence(), sm.get_left_sequence())
@@ -188,7 +170,7 @@ if __name__ == "__main__":
 
     dico_all={}
     list_score=[]
-    for elem in glob.glob(cwd+"/data/rep_pssm_test/*.aatmx") :
+    for elem in glob.glob(cwd+"/data/pssm_templates/*.aatmx") :
         name_fasta2,seq2,pssm2=read_pssm(elem)
         name_fasta2=name_fasta2.replace(">","").replace("\n","").replace("'","").replace(" ","")
         sm = ScoringMatrix(seq1, seq2)
