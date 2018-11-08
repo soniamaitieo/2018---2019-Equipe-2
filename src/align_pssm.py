@@ -20,7 +20,7 @@ def score_between_2_pssm(v1,v2):
     """
     score=0
     cwd = os.getcwd()
-    for i in range(0,len(v1)) :
+    for i in range(0,20) :
         score=score+v1[i]*v2[i]
     return(score)
 
