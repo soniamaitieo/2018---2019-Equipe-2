@@ -1,7 +1,7 @@
 #!/bin/bash
 #formatdb -i /home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta -p T -o T
 
-##### A changer en fonction de l'emplacement de uniref50.fasta #######
+##### A changer en fonction de l'emplacement de uniref50.fasta ou autre base de donnees #######
 DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
 DIR_CURRENT=$(pwd)
 ####################################################
