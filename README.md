@@ -8,7 +8,8 @@ One Paragraph of project description goes here
 All the software and database you need :
 
  **Downloading database (ex: Uniref50) :**
-[Dowload here](https://www.uniprot.org/downloads)
+
+[Dowload database here](https://www.uniprot.org/downloads)
 
 
 **Installing PSI-BLAST:**
@@ -22,10 +23,23 @@ or ` conda install -c bioconda blast-legacy`
 
 **MAFFT :**
 
-- [Dowload here](https://mafft.cbrc.jp/alignment/software/linux.html)  
+- [Dowload MAFFT here](https://mafft.cbrc.jp/alignment/software/linux.html)  
 OR
 - Use the program in */prog* .
 
+**Python 3 :**
+
+- [Dowload Python here](https://www.python.org/downloads/)  
+
+**Python library :**
+
+``` ruby
+pip install numpy
+pip install pandas
+pip install sys
+pip install os
+pip install glob
+```
 
 ### How to use
 
