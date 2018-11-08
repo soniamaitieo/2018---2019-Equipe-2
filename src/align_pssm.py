@@ -159,7 +159,7 @@ def make_output(name_query,list_score,dico_all,seq1) :
                 fillout1.write("{:5}{:9}{:>8}{:>9}{:>8}{:>8}{:>6}{:>8}{:>6}{:>6}{:>9}{:>9}{:^18}\n".format(str(id),round(score,4),"X","X","X","X","X","X","X","X","X","X",name_template))
 
                 fillout2.write("No "+str(id)+"\n")
-                fillout2.write("Alignment : "+ name_query + ", "+ str(len(seq1))+" vs "+ name_template+"\n")
+                fillout2.write("Alignment : "+ name_query + ", "+ str(len(seq1))+" aa. vs "+ name_template+"\n")
                 fillout2.write("Score : {:^10} | Normalized score : {:^10} | Query coverage : {:^10} | Identity : {:^10} | Gaps : {:^10} | SS Score : {:10} | Alignment length : {:10} | Corr score : {:10} \n\n".format(score,"X","X","X","X","X","X","X"))
 
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query","1",seq[1],str(len(seq1.replace("_","").replace("-","")))))
