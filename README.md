@@ -7,11 +7,11 @@ One Paragraph of project description goes here
 
 All the software and database you need :
 
- ** Downloading database (ex: Uniref50) :**
+ **Downloading database (ex: Uniref50) :**
 [Dowload here](https://www.uniprot.org/downloads)
 
 
-** Installing PSI-BLAST:**
+**Installing PSI-BLAST:**
 
  - Install Legacy Blast : PSIBLAST 2.2.31+  
 `sudo apt-get install ncbi-blast+-legacy`
@@ -20,7 +20,7 @@ or ` conda install -c bioconda blast-legacy`
  - Formate database Uniref50  
 `formatdb -i uniref50.fasta -p T -o T`
 
-**  MAFFT :**
+**MAFFT :**
 
 - [Dowload here](https://mafft.cbrc.jp/alignment/software/linux.html)  
 OR
@@ -29,21 +29,21 @@ OR
 
 ### How to use
 
-** Clone the repository : **
+**Clone the repository :**
 
 ``` ruby
 git clone https://github.com/meetU-MasterStudents/2018---2019-Equipe-2.git
 ```
 
 
-** /!\ CHANGE DIRECTORY FOR DATABASE: in *pipeline_final.sh* **
+**/!\ CHANGE DIRECTORY FOR DATABASE: in *pipeline_final.sh***
 
 ``` ruby
 ##### A changer en fonction de l'emplacement de uniref50.fasta ou autre base de donnees #######
 DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
 ```
 
-** Lauch from directory : *2018---2019-Equipe-2* **
+**Lauch from directory : *2018---2019-Equipe-2***
 ``` ruby
 ./pipeline_final.sh Query.fasta
 ```
