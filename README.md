@@ -1,7 +1,7 @@
 # MEET-U Amont: team n°2
 
-One Paragraph of project description goes here
 
+[![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
 
 ### Prerequisites
 
