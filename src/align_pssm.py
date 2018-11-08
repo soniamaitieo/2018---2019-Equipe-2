@@ -20,12 +20,8 @@ def score_between_2_pssm(v1,v2):
     """
     score=0
     cwd = os.getcwd()
-    mblos_path=cwd+"/data/BLOSUM62.txt"
-    m_blos=np.loadtxt(mblos_path)
     for i in range(0,len(v1)) :
-        #for j in range(0,len(v2)):
         score=score+v1[i]*v2[i]
-        #*m_blos[i][j]
     return(score)
 
 def initialize_edges(sm, alignment_is_global=False):
