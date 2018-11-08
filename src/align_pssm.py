@@ -9,7 +9,7 @@ import numpy as np
 import terminal_output
 import glob
 import sys
-
+import os
 gap_score = -1
 terminal_gap_score = 0
 
