@@ -1,4 +1,4 @@
-# MEET-U Amont: team n°2
+# MEET-U Upstream: team n°2
 
 
 [![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
