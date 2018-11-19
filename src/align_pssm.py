@@ -12,7 +12,7 @@ import sys
 import os
 gap_score = -1
 terminal_gap_score = 0
-
+gap_open = - 0.2
 def score_between_2_pssm(v1,v2):
     """
     this function goal is to calculate score bewteen 2 vectors
@@ -52,8 +52,15 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
             score_diagonal = 0
             match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
             score_diagonal = sm.get_score(i - 1, j - 1) + match
-            score_left = sm.get_score(i, j - 1) + gap_score
-            score_up = sm.get_score(i - 1, j) + gap_score
+            if sm.get_backlinks(i,j-1)["left"] :
+                score_left = sm.get_score(i, j - 1) + gap_open
+            else :
+                score_left = sm.get_score(i, j - 1) + gap_score
+
+            if sm.get_backlinks(i-1,j)["up"] :
+                score_up = sm.get_score(i - 1, j) + gap_open
+            else :
+                score_up = sm.get_score(i - 1, j) + gap_score
 
 
             max_score = max(score_diagonal, score_left, score_up)
@@ -163,10 +170,9 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     arg1=sys.argv[1]
     name_fasta1,seq1,pssm1=read_pssm(cwd+"/"+arg1)
-
     dico_all={}
     list_score=[]
-    for elem in glob.glob(cwd+"/data/pssm_templates/*.aatmx") :
+    for elem in glob.glob(cwd+"/data/data_test/rep_pssm_test/*.aatmx") :
         name_fasta2,seq2,pssm2=read_pssm(elem)
         name_fasta2=name_fasta2.replace(">","").replace("\n","").replace("'","").replace(" ","")
         sm = ScoringMatrix(seq1, seq2)
