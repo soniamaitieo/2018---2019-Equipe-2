@@ -12,15 +12,14 @@ import sys
 import os
 gap_score = -1
 terminal_gap_score = 0
-gap_open = - 0.2
+gap_open = - 0.5
 def score_between_2_pssm(v1,v2):
     """
     this function goal is to calculate score bewteen 2 vectors
 
     """
     score=0
-    cwd = os.getcwd()
-    for i in range(0,20) :
+    for i in range(len(v1)) :
         score=score+v1[i]*v2[i]
     return(score)
 
@@ -45,11 +44,11 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
     specified to be True.
     Based on pseudocode provided on page 54 of our textbook.'''
     initialize_edges(sm, alignment_is_global)
+    score_diagonal = 0
 
     for i in range(1, sm.get_rows() +1):
         for j in range(1, sm.get_columns() +1):
             # Calculate scores
-            score_diagonal = 0
             match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
             score_diagonal = sm.get_score(i - 1, j - 1) + match
             if sm.get_backlinks(i,j-1)["left"] :
@@ -67,6 +66,7 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
             sm.set_score(i, j, max_score)
             # Establish backlink(s)
             if max_score == score_diagonal:
+                #print(match)
                 sm.add_diagonal_backlink(i, j)
             if max_score == score_left:
                 sm.add_left_backlink(i, j)
@@ -120,7 +120,17 @@ def read_pssm(path) :
         seq=fillin.readline().replace(" ","").replace("\n","")
         lines = (line for line in fillin)
         FH = np.loadtxt(lines)
-    return(name_fasta,seq,FH)
+    #print(seq)
+    list_a_suppr=[]
+    for i in range(0,len(seq)):
+        if seq[i]=="-" :
+            list_a_suppr.append(i)
+    #print(FH.shape)
+    #print(list_a_suppr)
+    for elem in reversed(list_a_suppr) :
+        FH=np.delete(FH,elem,axis=0)
+    #print(FH.shape)
+    return(name_fasta,seq.replace("-",""),FH)
 
 def make_output(name_query,list_score,dico_all,seq1) :
 
@@ -172,7 +182,7 @@ if __name__ == "__main__":
     name_fasta1,seq1,pssm1=read_pssm(cwd+"/"+arg1)
     dico_all={}
     list_score=[]
-    for elem in glob.glob(cwd+"/data/data_test/rep_pssm_test/*.aatmx") :
+    for elem in glob.glob(cwd+"/data/pssm_templates/*aatmx") :
         name_fasta2,seq2,pssm2=read_pssm(elem)
         name_fasta2=name_fasta2.replace(">","").replace("\n","").replace("'","").replace(" ","")
         sm = ScoringMatrix(seq1, seq2)
