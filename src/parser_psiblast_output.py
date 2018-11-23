@@ -41,7 +41,7 @@ def parse_psiblast_output(psiblastoutput , matchfile):
             for x in range(v1,v2):
                 if lines[x].startswith("Sbjct") :
                     L.append(lines[x].split()[2])
-            dico[lines[v1].split()[0]] = ''.join(L)
+            dico[lines[v1].split()[1]] = ''.join(L)
     with open( matchfile ,'w') as fout:
         for k, v in dico.items():
             fout.write(''.join([">" , k , "\n" , v , "\n"]))
