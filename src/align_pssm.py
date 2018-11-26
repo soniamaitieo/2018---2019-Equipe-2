@@ -23,6 +23,21 @@ def score_between_2_pssm(v1,v2):
         score=score+v1[i]*v2[i]
     return(score)
 
+def score_Pearson(v1,v2, pssm1,pssm2) :
+    """
+    this function goal is to calculate score between 2 vector with Pearsons's correlation
+    """
+    score_up=0
+    score_down_1=0
+    score_down_2=0
+    moy_pssm1=np.mean(pssm1, axis=0)
+    moy_pssm2=np.mean(pssm2, axis=0)
+    for i in range(len(v1)) :
+        score_up+=(v1[i]-moy_pssm1[i]) * (v2[i]-moy_pssm2[i])
+        score_down_1+=(v1[i]-moy_pssm1[i])**2
+        score_down_2+=(v2[i]-moy_pssm2[i])**2
+    return(score_up/np.sqrt(score_down_1*score_down_2))
+
 def initialize_edges(sm, alignment_is_global=False):
     '''Sets up the top and left edges of the provided ScoringMatrix. This is
     the first step in the dynamic programming algorithm.
@@ -50,6 +65,10 @@ def fill_matrix(sm,pssm1,pssm2, alignment_is_global=False):
         for j in range(1, sm.get_columns() +1):
             # Calculate scores
             match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
+            match2=score_Pearson(pssm1[i-1],pssm2[j-1],pssm1,pssm2)
+            if match>=0.1 : 
+                print("score match dot_product: " + str(match))
+                print("score match pearsons : " + str(match2))
             score_diagonal = sm.get_score(i - 1, j - 1) + match
             if sm.get_backlinks(i,j-1)["left"] :
                 score_left = sm.get_score(i, j - 1) + gap_open
