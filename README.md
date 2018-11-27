@@ -3,6 +3,13 @@
 
 [![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
 
+### Our method
+
+We are team n°2 from Paris Diderot. Here, we decide to make a profile-profile alignment in order to find a template which matches with a query. Our profile is composed by 20 amino-acids, gap and secondary structure informations. The alignment is a semi-global alignment and we made a dot-product score and a Pearson's correlation score. We will use those differents score for our benchmark.
+
+
+If you have any questions or problems, feel free to create an issue :)
+
 ### Prerequisites
 
 All the software and database you need :
