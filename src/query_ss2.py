@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 import sys
 
-def get_query_name(filename):
+def get_name(filename): 
     with open (filename, 'r') as f:
         line = f.readline()
-        query_nqme = line[1:]
-    return query_nqme
+        name = line[1:]
+    return name
 
 def read_mfasta(filename):
     """
@@ -87,7 +87,7 @@ def get_weights(seq_list, freq_list):
     return wgt_list
 
 
-def create_pssm(seq_list, wgt_list, bg_freq):
+def create_pssm(seq_list, wgt_list):
 
     """ this function creates firstly a matrix of nx21 (n is the length of input seq)
     each input sequence is compared to aa_orders = "ARNDCQEGHILKMFPSTWYV-" to calculate
@@ -99,15 +99,15 @@ def create_pssm(seq_list, wgt_list, bg_freq):
         seq_wgt = wgt_list[idx]
         for pos in range(len(seq)):
             aa_idx = aa_orders.find(seq[pos])
-            array[pos, aa_idx] += 1*seq_wgt
+            array[pos, aa_idx] += round(1*seq_wgt, 5)
 
-    # add the pseudo-count (background frequency of aa) in each column
-    for order in range(len(aa_orders[:-1])):
-        for aa, freq in bg_freq.items():
-            if aa_orders[order] == aa:
-                array[:, order] += round(bg_freq[aa], 5)
-    new_array = array/2
+    # add the pseudo-count (background frequency of aa = 1/20) in each column
+    bg = np.full((len(seq_list[0]), 20), 0.05000)
+    gap = np.zeros((len(seq_list[0]), 1))
+    array_bg = np.append(bg, gap, axis = 1)               
+    new_array = (array + array_bg)/2
     return new_array
+
 
 def get_ss2_df(ss2_file):
     # reads output file returned by psipred and returns output.ss2 by removing non-useful information
@@ -126,10 +126,6 @@ def get_ss2_df(ss2_file):
 if __name__ == "__main__":
 
     aa_orders = "ARNDCQEGHILKMFPSTWYV-"
-
-    bg_freq = {"A":0.0789, "R":0.054, "N": 0.0413, "D": 0.0535, "C": 0.0150, "Q":0.0395, "E": 0.0667,
-               "G":0.0696, "H":0.0229, "I": 0.059, "L": 0.0965, "K": 0.0592, "M":0.0238, "F": 0.0396,
-               "P":0.0483, "S":0.0682, "T": 0.0541, "W": 0.0113, "Y":0.0303, "V":0.0673}
 
     # create a list containing all fasta sequences with gaps
 
@@ -158,7 +154,7 @@ if __name__ == "__main__":
     seq_wgts = get_weights(conserved_seq, freq_list)
 
     # create the pssm
-    M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
+    M_pssm = create_pssm(conserved_seq, seq_wgts)
     pssm = pd.DataFrame(M_pssm)
     pssm.columns = list(aa_orders)
     ss2 = get_ss2_df(sys.argv[2])
@@ -166,6 +162,6 @@ if __name__ == "__main__":
     pssm_ss2 = pd.concat(frames, axis=1)
 
     with open(sys.argv[3], "w") as output_f:
-        output_f.write(get_query_name(sys.argv[1]))
+        output_f.write(get_name(sys.argv[1]))
         output_f.write(conserved_seq[0]+"\n")
         pssm_ss2.to_string(output_f, header=False, index=False)
