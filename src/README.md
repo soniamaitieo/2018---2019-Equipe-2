@@ -15,7 +15,6 @@ it takes mfasta file and a ss2 file returned by psipred_runpsipred_single to ret
 	# agrv 2: ss2 file (input)
 	# agrv 3: pssm_ss2 file (output)
 
-# Things have to be understood and performed
+### Things have to be understood and performed
   1. can't run psipred using a given mfasta file (makemat step), I just used input fasta to perform psipred_single. However, it's impossible to use this for template.
   2. query_ss2 doesn't take into account the neither seq weight nor pseudo-count
-
