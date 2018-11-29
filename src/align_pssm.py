@@ -156,7 +156,24 @@ def read_pssm(path):
     #print(FH.shape)
     return(name_fasta, seq.replace("-", ""), matrix)
 
-def make_output(name_query, list_score, dico_all, seq1):
+def psipred_for_foldrec(pssm):
+    list_score_psipred = []
+    list_struc_psipred = []
+    for line in pssm:
+        coil = line[-3]
+        helix = line[-2]
+        sheet = line[-1]
+
+        if coil >= helix and coil >= sheet:
+            list_struc_psipred.append("C")
+        elif helix >= coil and helix >= sheet:
+            list_struc_psipred.append("H")
+        else:
+            list_struc_psipred.append("E")
+        list_score_psipred.append(max(coil, helix, sheet))
+    return((list_struc_psipred, list_score_psipred))
+
+def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
     """
     Prepare output_file with all alignments prepared before and their score
     """
@@ -173,11 +190,36 @@ def make_output(name_query, list_score, dico_all, seq1):
             fillout2.write("*** ALIGNMENTS DETAILS ***\n")
 
             number_template = 1
+            struct_query, score_psipred = dico_psipred[name_query]
+
             for score in list_score:
                 seq = dico_all[score][0][0]
                 seq = seq.pop()
                 name_template = dico_all[score][0][1]
-                name_template = name_template.split(";")[-1]
+
+                psipred_query = ""
+                score_psipred_query = ""
+                struct_query_tmp = struct_query.copy()
+                score_psipred_tmp = score_psipred.copy()
+                for elem in seq[1]:
+                    if elem == "-":
+                        psipred_query += "-"
+                        score_psipred_query += "-"
+                    else :
+                        psipred_query += struct_query_tmp.pop(0)
+                        score_psipred_query += str(score_psipred_tmp.pop(0))
+
+                struct_temp, score_temp = dico_psipred[name_template]
+                psipred_template = ""
+                score_psipred_template = ""
+                for elem in seq[0]:
+                    if elem == "-":
+                        psipred_template += "-"
+                        score_psipred_template += "-"
+                    else :
+                        psipred_template += struct_temp.pop(0)
+                        score_psipred_template += str(score_temp.pop(0))
+
 
                 #with open(HOMSTRAD_PATH+name_template+"/"+name_template+".scop_id") as f :
                 #    scop_id=f.readline().replace("\n","")
@@ -200,10 +242,10 @@ def make_output(name_query, list_score, dico_all, seq1):
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", seq[1], \
                  str(len(seq1.replace("_", "").replace("-", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", "X" * len(seq[1]), \
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", psipred_query, \
                  str(len(seq1.replace("_", "").replace("-", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", "X" * len(seq[1]),  \
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", score_psipred_query,  \
                  str(len(seq1.replace("_", "").replace("-", "")))))
 
                 fillout2.write("\n")
@@ -211,10 +253,10 @@ def make_output(name_query, list_score, dico_all, seq1):
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", seq[0], \
                  str(len(seq[0].replace("_", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", "X" * len(seq[0]), \
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", psipred_template, \
                  str(len(seq[0].replace("_", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", "X" * len(seq[0]), \
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", score_psipred_template, \
                  str(len(seq[0].replace("_", "")))))
 
                 fillout2.write("\n")
@@ -232,18 +274,22 @@ def run_alignment_and_make_output(fasta_file):
     alignement and make output_file
     """
     name_fasta1, seq1, pssm1 = read_pssm(CWD + "/" + fasta_file)
+    name_query = name_fasta1.replace(">", "").replace("\n", "").replace("'", "").replace(" ", "")
     dico_all = {}
     list_score = []
+    dico_psipred = {}
     iterator = 1
     #CWD+"/data/data_test/rep_pssm_test/test/*aatmx"
     #CWD+"/data/pssm_templates/*aatmx"
+    dico_psipred[name_query] = psipred_for_foldrec(pssm1)
     for elem in glob.glob(CWD + "/data/data_test/rep_pssm_test/test/*aatmx"):
         print("template number :" + str(iterator))
         iterator += 1
         name_fasta2, seq2, pssm2 = read_pssm(elem)
-
         name_fasta2 = name_fasta2.replace(">", "").replace("\n", "").replace("'", "") \
-         .replace(" ", "")
+         .replace(" ", "").split(";")[-1]
+        dico_psipred[name_fasta2]=psipred_for_foldrec(pssm2)
+
 
         matrix_scoring = ScoringMatrix(seq1, seq2)
         align, score = get_alignments(matrix_scoring, pssm1, pssm2)
@@ -254,9 +300,7 @@ def run_alignment_and_make_output(fasta_file):
             dico_all[score].append((align, name_fasta2))
             list_score.append(score)
     list_score = reversed(sorted(list_score))
-
-    name_query = name_fasta1.replace(">", "").replace("\n", "").replace("'", "").replace(" ", "")
-    make_output(name_query, list_score, dico_all, seq1)
+    make_output(name_query, list_score, dico_all, seq1, dico_psipred)
 
 if __name__ == "__main__":
     FASTA_FILE = sys.argv[1]
