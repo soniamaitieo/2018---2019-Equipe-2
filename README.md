@@ -5,7 +5,8 @@
 
 ### Our method
 
-We are team n°2 from Paris Diderot. Here, we decide to make a profile-profile alignment in order to find a template which matches with a query. Our profile is composed by 20 amino-acids, gap and secondary structure informations. The alignment is a semi-global alignment and we made a dot-product score and a Pearson's correlation score. We will use those differents score for our benchmark.
+We are team n°2 from Paris Diderot. Here, we decide to make a profile-profile alignment in order to find a template which matches with a query. Our profile is composed by 20 amino-acids, gap and secondary structure informations. The alignment is a semi-global alignment and we made a dot-product score and a Pearson's correlation score. We will use those differents scores for our benchmark.
+
 
 
 If you have any questions or problems, feel free to create an issue :)
@@ -24,6 +25,11 @@ All the software and database you need :
  - Install Legacy Blast : PSIBLAST 2.2.31+  
 `sudo apt-get install ncbi-blast+-legacy`
 or ` conda install -c bioconda blast-legacy`
+
+
+Sometimes legacy blast need a perl library. Check if it needs it with running legacy blast
+
+
 
  - Formate database Uniref50  
 `formatdb -i uniref50.fasta -p T -o T`
