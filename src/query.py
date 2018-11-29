@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import sys
 
-def get_query_name(filename): 
+def get_query_name(filename):
     with open (filename, 'r') as f:
         line = f.readline()
         query_nqme = line[1:]
@@ -23,8 +23,8 @@ def read_mfasta(filename):
     return seq_list
 
 def get_cols_todel(seq_list):
-    """ this function firstly creates a 1D array to count the gaps of each position of a sequence. 
-    it returns subsequently a list of positions to delete when there are too many gaps in one position 
+    """ this function firstly creates a 1D array to count the gaps of each position of a sequence.
+    it returns subsequently a list of positions to delete when there are too many gaps in one position
     (more than half of input sequences) """
     gap_mt = np.zeros(len(seq_list[0]), int)
     cols_todel = []
@@ -32,16 +32,16 @@ def get_cols_todel(seq_list):
         for col_idx in range(len(seq_list[0])):
             if seq[col_idx] == "-":
                 gap_mt[col_idx] += 1
-                
+
     #get the column_index that the numbers of gaps are more than half of length of input sequences
     for pos in range(gap_mt.shape[0]):
         count = gap_mt[pos]
         if count >= 1/2*(len(seq_list)):
             cols_todel.append(pos)
-    return cols_todel 
+    return cols_todel
 
 def get_conserved_seq(table):
-    """ create a dictionary to get the conserved sequences """  
+    """ create a dictionary to get the conserved sequences """
     seq_dict = {}
     for idx, row in table.iterrows():
         seq = ""
@@ -60,7 +60,7 @@ def get_freq(table):
     return pos_freq_lst
 
 def get_conserved_seq(table):
-    """ create a list to get the conserved sequences """  
+    """ create a list to get the conserved sequences """
     seq_list = []
     for idx, row in table.iterrows():
         seq = ""
@@ -87,7 +87,7 @@ def get_weights(seq_list, freq_list):
     return wgt_list
 
 
-def create_pssm(seq_list, wgt_list, bg_freq):  
+def create_pssm(seq_list, wgt_list, bg_freq):
 
     """ this function creates firstly a matrix of nx21 (n is the length of input seq)
     each input sequence is compared to aa_orders = "ARNDCQEGHILKMFPSTWYV-" to calculate
@@ -100,7 +100,7 @@ def create_pssm(seq_list, wgt_list, bg_freq):
         for pos in range(len(seq)):
             aa_idx = aa_orders.find(seq[pos])
             array[pos, aa_idx] += 1*seq_wgt
-            
+
     # add the pseudo-count (background frequency of aa) in each column
     for order in range(len(aa_orders[:-1])):
         for aa, freq in bg_freq.items():
@@ -111,45 +111,46 @@ def create_pssm(seq_list, wgt_list, bg_freq):
 
 
 
-#####  main program  #####
-aa_orders = "ARNDCQEGHILKMFPSTWYV-"
+if __name__ == "__main__":
 
-bg_freq = {"A":0.0789, "R":0.054, "N": 0.0413, "D": 0.0535, "C": 0.0150, "Q":0.0395, "E": 0.0667, 
-           "G":0.0696, "H":0.0229, "I": 0.059, "L": 0.0965, "K": 0.0592, "M":0.0238, "F": 0.0396, 
-           "P":0.0483, "S":0.0682, "T": 0.0541, "W": 0.0113, "Y":0.0303, "V":0.0673}
+    aa_orders = "ARNDCQEGHILKMFPSTWYV-"
 
-# create a list containing all fasta sequences with gaps
+    bg_freq = {"A":0.0789, "R":0.054, "N": 0.0413, "D": 0.0535, "C": 0.0150, "Q":0.0395, "E": 0.0667,
+               "G":0.0696, "H":0.0229, "I": 0.059, "L": 0.0965, "K": 0.0592, "M":0.0238, "F": 0.0396,
+               "P":0.0483, "S":0.0682, "T": 0.0541, "W": 0.0113, "Y":0.0303, "V":0.0673}
 
-seqList = read_mfasta(sys.argv[1])
+    # create a list containing all fasta sequences with gaps
 
-#create a dataframe with each row presenting a fasta sequences only with few gaps 
-pos_todel = get_cols_todel(seqList)
-df = pd.DataFrame.from_records(seqList)
-# remove the columns whose gaps are equal or more than half of numbers of input sequence
-df.drop(pos_todel, axis =1, inplace=True)
+    seqList = read_mfasta(sys.argv[1])
 
-# give the column names
-col_names =[]
-for i in range(1, (df.shape[1]+1)):
-    name = "Pos"+ str(i)
-    col_names.append(name)
-df.columns = col_names
+    #create a dataframe with each row presenting a fasta sequences only with few gaps
+    pos_todel = get_cols_todel(seqList)
+    df = pd.DataFrame.from_records(seqList)
+    # remove the columns whose gaps are equal or more than half of numbers of input sequence
+    df.drop(pos_todel, axis =1, inplace=True)
 
-# get the frequency of each columns (positions) 
-freq_list = get_freq(df)
+    # give the column names
+    col_names =[]
+    for i in range(1, (df.shape[1]+1)):
+        name = "Pos"+ str(i)
+        col_names.append(name)
+    df.columns = col_names
 
-# get the conserved sequences of mfasta in which most gaps are removed
-conserved_seq = get_conserved_seq(df)
+    # get the frequency of each columns (positions)
+    freq_list = get_freq(df)
 
-# get the weights of each conserved sequences 
-seq_wgts = get_weights(conserved_seq, freq_list)
+    # get the conserved sequences of mfasta in which most gaps are removed
+    conserved_seq = get_conserved_seq(df)
 
-# create the pssm
-M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
-pssm = pd.DataFrame(M_pssm)
-pssm.columns = list(aa_orders)
+    # get the weights of each conserved sequences
+    seq_wgts = get_weights(conserved_seq, freq_list)
 
-with open(sys.argv[2], "w") as output_f:
-    output_f.write(get_query_name(sys.argv[1]))
-    output_f.write(conserved_seq[0]+"\n")
-    pssm.to_string(output_f, header=False, index=False)
+    # create the pssm
+    M_pssm = create_pssm(conserved_seq, seq_wgts, bg_freq)
+    pssm = pd.DataFrame(M_pssm)
+    pssm.columns = list(aa_orders)
+
+    with open(sys.argv[2], "w") as output_f:
+        output_f.write(get_query_name(sys.argv[1]))
+        output_f.write(conserved_seq[0]+"\n")
+        pssm.to_string(output_f, header=False, index=False)
