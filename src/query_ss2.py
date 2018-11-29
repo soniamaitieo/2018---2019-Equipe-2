@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import sys
 
-def get_name(filename): 
+def get_name(filename):
     with open (filename, 'r') as f:
         line = f.readline()
         name = line[1:]
@@ -23,27 +23,27 @@ def read_mfasta(filename):
     return seq_list
 
 def get_cols_todel(seq_list):
-    
-    """ this function performs 3 steps: 
+
+    """ this function performs 3 steps:
     1. creates a 1D array to count the gaps of each position of a given sequence
     2. creates a list to indicate the position SHOULD be keeped
-    3. finally return a list of positions to delete when there are too many gaps in the position and this position is NOT keeped position 
+    3. finally return a list of positions to delete when there are too many gaps in the position and this position is NOT keeped position
     (more than half of input sequences) """
-    
-    gap_mt = np.zeros(len(seq_list[0]), int) #create a 1D array for indicating all positions of sequence 
+
+    gap_mt = np.zeros(len(seq_list[0]), int) #create a 1D array for indicating all positions of sequence
     cols_todel = []
     for seq in seq_list:
         for col_idx in range(len(seq_list[0])):
             if seq[col_idx] == "-":
                 gap_mt[col_idx] += 1
-                
+
     #set a list to keep the positions that could not be deleted (the position in which one amine acid exists in sequence)
     seq_ref = seq_list[0]
     cols_keep = []
     for seq_pos in range(len(seq_ref)):
         if seq_ref[seq_pos] != "-":
             cols_keep.append(seq_pos)
-    
+
     #get the column_index that the numbers of gaps are more than half of length of input sequences and NOT in the positions to keep
     for pos in range(gap_mt.shape[0]):
         count = gap_mt[pos]
@@ -116,7 +116,7 @@ def create_pssm(seq_list, wgt_list):
     # add the pseudo-count (background frequency of aa = 1/20) in each column
     bg = np.full((len(seq_list[0]), 20), 0.05000)
     gap = np.zeros((len(seq_list[0]), 1))
-    array_bg = np.append(bg, gap, axis = 1)               
+    array_bg = np.append(bg, gap, axis = 1)
     new_array = (array + array_bg)/2
     return new_array
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     #create a dataframe with each row presenting a fasta sequences only with few gaps
     pos_todel = get_cols_todel(seqList)
     df = pd.DataFrame.from_records(seqList)
-    
+
     # remove the columns whose gaps are equal or more than half of numbers of input sequence
     df.drop(pos_todel, axis =1, inplace=True)
 
@@ -164,24 +164,26 @@ if __name__ == "__main__":
 
     # get the weights of each conserved sequence
     seq_wgts = get_weights(conserved_seq, freq_list)
-    
+
     # get the position where there is a gap in the onserved sequence
     pos_out_pssm = []
     cons_seq = conserved_seq[0]
     for pos_idx in range(len(cons_seq)):
         if cons_seq[pos_idx] == "-":
             pos_out_pssm.append(pos_idx)
-   
+
     # create the pssm
     M_pssm = create_pssm(conserved_seq, seq_wgts)
     pssm = pd.DataFrame(M_pssm)
     pssm.columns = list(aa_orders)
-    
+
     # check if there is a gap in query sequence, we remove this position in pssm
-    if len(pos_out_pssm) != 0: 
+    if len(pos_out_pssm) != 0:
         new_pssm = pssm.drop(pssm.index[pos_out_pssm])
-    new_pssm = new_pssm.reset_index(drop=True)
-                                
+        new_pssm = new_pssm.reset_index(drop=True)
+    else:
+        new_pssm = pssm
+
     ss2 = get_ss2_df(sys.argv[2])
     frames = [new_pssm, ss2]
     pssm_ss2 = pd.concat(frames, axis=1, ignore_index=True)
@@ -190,5 +192,3 @@ if __name__ == "__main__":
         output_f.write(get_name(sys.argv[1]))
         output_f.write(conserved_seq[0]+"\n")
         pssm_ss2.to_string(output_f, header=False, index=False)
-        
-
