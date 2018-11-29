@@ -3,6 +3,11 @@
 
 [![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
 
+
+##WARNING
+
+We had some trouble with the new version of our pipeline (bad PSSM). Please don't try our pipeline till this message exist. We will fix that soon.
+
 ### Our method
 
 We are team n°2 from Paris Diderot. Here, we decide to make a profile-profile alignment in order to find a template which matches with a query. Our profile is composed by 20 amino-acids, gap and secondary structure informations. The alignment is a semi-global alignment and we made a dot-product score and a Pearson's correlation score. We will use those differents scores for our benchmark.
