@@ -189,8 +189,9 @@ if __name__ == "__main__":
     # check if there is a gap in query sequence, we remove this position in pssm
     if len(pos_out_pssm) != 0:
         new_pssm = pssm.drop(pssm.index[pos_out_pssm])
-    new_pssm = new_pssm.reset_index(drop=True)
-
+        new_pssm = new_pssm.reset_index(drop=True)
+    else:
+        new_pssm=pssm
     ss2 = get_ss2_df(sys.argv[2])
     frames = [new_pssm, ss2]
     pssm_ss2 = pd.concat(frames, axis=1, ignore_index=True)
