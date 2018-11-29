@@ -1,0 +1,16 @@
+*** HITS RANKED *** 
+
+SEQUENCE QUERY FILE : UBQ, 73
+
+#| Score | Ungaped_score | Pvalue_Q | Pscore | PQTscore | P-Value_T | Q. Length | T. Length | Q. begin-end | T. begin-end | HITS
+---------------------------------------------------------
+1      10.4476       X        X       X       X     X       X     X     X        X        X       UBQ        
+2       3.9286       X        X       X       X     X       X     X     X        X        X       1awd       
+3       3.7331       X        X       X       X     X       X     X     X        X        X       1flv       
+4       3.5879       X        X       X       X     X       X     X     X        X        X       1pbk       
+5       3.5655       X        X       X       X     X       X     X     X        X        X       1gox       
+6       3.5635       X        X       X       X     X       X     X     X        X        X      1fnf2       
+7       2.6488       X        X       X       X     X       X     X     X        X        X      1h98a       
+
+
+
