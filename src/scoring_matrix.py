@@ -55,8 +55,7 @@ class ScoringMatrix:
                        for x in range(seql[0])]
         self.left_sequence = sequence1
         self.top_sequence = sequence2
-        print(self.left_sequence)
-        print(self.top_sequence)
+
 
     def get_top_sequence(self):
         '''Returns the sequence along the top edge of the matrix.'''
@@ -75,7 +74,7 @@ class ScoringMatrix:
         '''Returns the number of columns in this scoring matrix.
         This should be equal to the length of the top sequence, plus one.'''
         return len(self.top_sequence)
-        
+
     def get_score(self, row, column):
         '''Gets the current score at the specified row and column.'''
         try:
@@ -132,4 +131,3 @@ class ScoringMatrix:
         except IndexError:
             print("IndexError in remove_backlinks({0!s}, {1!s})".format(row, column))
             exit(1)
-

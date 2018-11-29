@@ -70,10 +70,10 @@ def fill_matrix(sm, pssm1, pssm2):
     for i in range(1, sm.get_rows() +1):
         for j in range(1, sm.get_columns() +1):
             # Calculate scores
-#            match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
-            match = score_Pearson(pssm1[i - 1], pssm2[j - 1], pssm1, pssm2)
-#            print("score match dot_product: " + str(match))
-#            print("score match pearsons : " + str(match2))
+            match=score_between_2_pssm(pssm1[i-1],pssm2[j-1])
+
+            #match = score_Pearson(pssm1[i - 1], pssm2[j - 1], pssm1, pssm2)
+
             score_diagonal = sm.get_score(i - 1, j - 1) + match
             if sm.get_backlinks(i, j - 1)["left"]:
                 score_left = sm.get_score(i, j - 1) + GAP_OPEN
@@ -90,7 +90,6 @@ def fill_matrix(sm, pssm1, pssm2):
             sm.set_score(i, j, max_score)
             # Establish backlink(s)
             if max_score == score_diagonal:
-                #print(match)
                 sm.add_diagonal_backlink(i, j)
             if max_score == score_left:
                 sm.add_left_backlink(i, j)
@@ -143,17 +142,6 @@ def read_pssm(path):
         seq = fillin.readline().replace(" ", "").replace("\n", "")
         lines = (line for line in fillin)
         matrix = np.loadtxt(lines)
-    #print(seq)
-    list_a_suppr = []
-    #for i in range(0,len(seq)):
-    for i, sequence in enumerate(seq):
-        if sequence == "-":
-            list_a_suppr.append(i)
-    #print(FH.shape)
-    #print(list_a_suppr)
-    for elem in reversed(list_a_suppr):
-        matrix = np.delete(matrix, elem, axis=0)
-    #print(FH.shape)
     return(name_fasta, seq.replace("-", ""), matrix)
 
 def psipred_for_foldrec(pssm):
@@ -279,15 +267,14 @@ def run_alignment_and_make_output(fasta_file):
     list_score = []
     dico_psipred = {}
     iterator = 1
-    #CWD+"/data/data_test/rep_pssm_test/test/*aatmx"
-    #CWD+"/data/pssm_templates/*aatmx"
+
     dico_psipred[name_query] = psipred_for_foldrec(pssm1)
-    for elem in glob.glob(CWD + "/data/data_test/rep_pssm_test/test/*aatmx"):
+    for elem in glob.glob(CWD + "/data/data_test/rep_pssm_test/test/*aamtx"):
         print("template number :" + str(iterator))
         iterator += 1
         name_fasta2, seq2, pssm2 = read_pssm(elem)
         name_fasta2 = name_fasta2.replace(">", "").replace("\n", "").replace("'", "") \
-         .replace(" ", "").split(";")[-1]
+         .replace(" ", "").split(".")[0]
         dico_psipred[name_fasta2]=psipred_for_foldrec(pssm2)
 
 
@@ -305,18 +292,3 @@ def run_alignment_and_make_output(fasta_file):
 if __name__ == "__main__":
     FASTA_FILE = sys.argv[1]
     run_alignment_and_make_output(FASTA_FILE)
-
-
-
-
-
-    #score_between_2_pssm(PSSM1,PSSM2)
-    #mblos_path=CWD+"/data/BLOSUM62.txt"
-
-
-    #sm = ScoringMatrix(seq1, seq2)
-    #fill_matrix(sm,pssm1,pssm2)
-    #align,score=get_alignments(sm,pssm1,pssm2)
-    #make_output(name_fasta1,name_fasta2,align,score,seq1,seq2)
-    #terminal_output.print_matrix(sm)
-    #terminal_output.print_alignments(get_alignments(sm,pssm1,pssm2))

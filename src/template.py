@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import sys
 
+PATH_METAFOLD_LIST="/home/madeleine/Documents/2018---2019-partage/Data/METAFOLD_extended.list"
 def get_name(filename):
     with open (filename, 'r') as f:
         line = f.readline()
@@ -15,11 +16,13 @@ def read_map(filename):
     """
     chevrons=[]
     seq_list = []
+    seq_list_name = []
     with open (filename, 'r') as f:
         lines = f.readlines()
         for num,line in enumerate(lines, 0):
             if line.startswith(">"):
                 chevrons.append(num)
+                seq_list_name.append(line.split(";")[-1].replace("\n",""))
     for c in range(0,len(chevrons) - 1 ):
             deb = chevrons[c]
             fin = chevrons[c+1]
@@ -27,9 +30,9 @@ def read_map(filename):
             for x in range(deb + 2 ,fin ):
                 tmp.append(lines[x].replace('\n', '').replace('*' ,''))
             seq_list.append(''.join(tmp))
-    return seq_list
+    return(seq_list, seq_list_name)
 
-def get_cols_todel(seq_list):
+def get_cols_todel(seq_list, index_real_query):
 
     """ this function performs 3 steps:
     1. creates a 1D array to count the gaps of each position of a given sequence
@@ -45,7 +48,8 @@ def get_cols_todel(seq_list):
                 gap_mt[col_idx] += 1
 
     #set a list to keep the positions that could not be deleted (the position in which one amine acid exists in sequence)
-    seq_ref = seq_list[0]
+    seq_ref = seq_list[index_real_query]
+    print(seq_ref)
     cols_keep = []
     for seq_pos in range(len(seq_ref)):
         if seq_ref[seq_pos] != "-":
@@ -142,16 +146,30 @@ def get_ss2_df(ss2_file):
     return ss2_df
 
 
+def find_who_is_the_real_seq(template_name):
+    #### A SUPPRIMER QUAND VOUS AUREZ A FAIRE TOURNER LE SCRIPT (j'ai changé le
+    ### nom du template parce que je suis dans un dossier test) ####
+    template_name=template_name.split('/')[-1].split(".")[0]
+    ############################################################################
+    with open(PATH_METAFOLD_LIST, "r") as fillin:
+        for elem in fillin:
+            if elem.split()[0] == template_name :
+                return elem.split()[1].split(".")[0]
+
 if __name__ == "__main__":
 
     aa_orders = "ARNDCQEGHILKMFPSTWYV-"
 
     # create a list containing all fasta sequences with gaps
-    seqList = read_map(sys.argv[1])
+    seqList, seqListName = read_map(sys.argv[1])
     template_name = sys.argv[1]
 
+    #find where is our query in .map
+    real_query_name_in_map = find_who_is_the_real_seq(template_name)
+    index_query_name_in_map = seqListName.index(real_query_name_in_map)
+
     #create a dataframe with each row presenting a fasta sequences only with few gaps
-    pos_todel = get_cols_todel(seqList)
+    pos_todel = get_cols_todel(seqList, index_query_name_in_map)
     df = pd.DataFrame.from_records(seqList)
 
     # remove the columns whose gaps are equal or more than half of numbers of input sequence
@@ -175,7 +193,7 @@ if __name__ == "__main__":
 
     # get the position where there is a gap in the onserved sequence
     pos_out_pssm = []
-    cons_seq = conserved_seq[0]
+    cons_seq = conserved_seq[index_query_name_in_map]
     for pos_idx in range(len(cons_seq)):
         if cons_seq[pos_idx] == "-":
             pos_out_pssm.append(pos_idx)
@@ -197,6 +215,7 @@ if __name__ == "__main__":
     pssm_ss2 = pd.concat(frames, axis=1, ignore_index=True)
 
     with open(sys.argv[3], "w") as output_f:
+        print(template_name)
         output_f.write(template_name.split(".")[0]+"\n")
         output_f.write(cons_seq +"\n")
         pssm_ss2.to_string(output_f, header=False, index=False)
