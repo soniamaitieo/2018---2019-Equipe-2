@@ -3,6 +3,7 @@
 
 # query.py
 it takes mfasta file and returns pssm matrix with length x 21 columns (20 amine acids + 1 gap)
+
 	- agrv 0: query.py
 	- agrv 1: mfasta file (input)
 	- agrv 2: pssm file (output)
