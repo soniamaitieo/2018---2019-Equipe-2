@@ -195,7 +195,7 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
                         score_psipred_query += "-"
                     else :
                         psipred_query += struct_query_tmp.pop(0)
-                        score_psipred_query += str(score_psipred_tmp.pop(0))
+                        score_psipred_query += str(int(score_psipred_tmp.pop(0)*10))
 
                 struct_temp, score_temp = dico_psipred[name_template]
                 psipred_template = ""
@@ -206,11 +206,11 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
                         score_psipred_template += "-"
                     else :
                         psipred_template += struct_temp.pop(0)
-                        score_psipred_template += str(score_temp.pop(0))
+                        score_psipred_template += str(int(score_temp.pop(0)*10))
 
 
-                #with open(HOMSTRAD_PATH+name_template+"/"+name_template+".scop_id") as f :
-                #    scop_id=f.readline().replace("\n","")
+                with open(HOMSTRAD_PATH+name_template+"/"+name_template+".scop_id") as f :
+                    scop_id=f.readline().replace("\n","")
 
 
                 fillout1.write("{:5}{:9}{:>8}{:>9}{:>8}{:>8}{:>6}{:>8}{:>6}{:>6}{:>9} \
@@ -220,7 +220,7 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
                 fillout2.write("No " + str(number_template) + "\n")
 
                 fillout2.write("Alignment : " + name_query + ", " + str(len(seq1)) + \
-                 " aa. vs "+ name_template + "\n")
+                 " aa. vs "+ name_template + " : " + str(scop_id) +" \n")
 
                 fillout2.write("Score : {:^10} | Normalized score : {:^10} | \
                  Query coverage : {:^10} | Identity : {:^10} | Gaps : {:^10}  \
