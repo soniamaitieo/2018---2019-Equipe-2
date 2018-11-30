@@ -9,10 +9,13 @@ from align_pssm import *
 import random as rd
 import numpy as np
 
-gap_score = -1
-terminal_gap_score = 0
-gap_open = - 0.5
-blossum = "/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/data_test/blossum62.txt"
+CWD = os.getcwd()
+
+
+#gap_score = -1
+#terminal_gap_score = 0
+#gap_open = - 0.5
+blossum = CWD + "/data/data_test/BLOSUM62.txt"
 
 def blossum_scores_val( blossum ):
     with open (blossum, 'r') as f:
@@ -42,12 +45,12 @@ def optimal_gap ( pssm1, pssm2):
 
 if __name__ == "__main__":
     cwd = os.getcwd()
-    path="/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/pssm_templates/"
+    path=CWD + "/data/pssm_templates_new/"
     all_open_gap=[]
     all_ext_gap =[]
     for i in range(0,100):
-        path_pssm1 = path + rd.choice(os.listdir("/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/pssm_templates/"))
-        path_pssm2 = path + rd.choice(os.listdir("/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/pssm_templates/"))
+        path_pssm1 = path + rd.choice(os.listdir(CWD + "/data/pssm_templates_new"))
+        path_pssm2 = path + rd.choice(os.listdir(CWD + "/data/pssm_templates_new"))
         pssm1= read_pssm(path_pssm1)
         pssm2=read_pssm(path_pssm2)
         print(optimal_gap (pssm1, pssm2))
