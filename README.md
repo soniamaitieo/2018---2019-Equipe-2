@@ -35,6 +35,12 @@ Sometimes legacy blast need a perl library. Check if it needs it with running le
  - Formate database Uniref50  
 `formatdb -i uniref50.fasta -p T -o T`
 
+**PSIPRED :**
+
+We give you the binary file of psipred, so you don't need to dowload it. But you need to download tcsh
+
+`sudo apt-get install csh`
+
 **MAFFT :**
 
 - [Dowload MAFFT here](https://mafft.cbrc.jp/alignment/software/linux.html)  
