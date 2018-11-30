@@ -4,9 +4,6 @@
 [![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
 
 
-## WARNING
-
-We had some trouble with the new version of our pipeline (bad PSSM). Please don't try our pipeline till this message exist. We will fix that soon.
 
 ### Our method
 
@@ -71,14 +68,23 @@ git clone https://github.com/meetU-MasterStudents/2018---2019-Equipe-2.git
 **/!\ CHANGE DIRECTORY FOR DATABASE: in *pipeline_final.sh***
 
 ``` ruby
-##### A changer en fonction de l'emplacement de uniref50.fasta ou autre base de donnees #######
 DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
+```
+**/!\ CHANGE DIRECTORY FOR HOMSTRAD DATABASE: in *src/align_pssm.py***
+``` ruby
+HOMSTRAD_PATH = "/home/madeleine/Documents/2018---2019-partage/Data/HOMSTRAD/"
 ```
 
 **Lauch from directory : *2018---2019-Equipe-2***
 ``` ruby
 ./pipeline_final.sh Query.fasta
 ```
+
+
+### WARNING
+
+We had some trouble with the DSSP to assign secondary structure for templates. So we use psipred on templates, which is less accurate. We will try to fix that soon.
+
 
 ## Authors
 
