@@ -12,8 +12,8 @@ import numpy as np
 from scoring_matrix import ScoringMatrix
 
 
-GAP_SCORE = -1
-GAP_OPEN = - 0.5
+GAP_SCORE = -1.55
+GAP_OPEN = - 0.02
 TERMINAL_GAP_SCORE = 0
 
 CWD = os.getcwd()
