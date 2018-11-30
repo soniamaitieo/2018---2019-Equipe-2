@@ -4,10 +4,6 @@
 [![Foo](https://i.imgur.com/b4GC6hM.png)](http://google.com.au/)
 
 
-## WARNING
-
-We had some trouble with the new version of our pipeline (bad PSSM). Please don't try our pipeline till this message exist. We will fix that soon.
-
 ### Our method
 
 We are team n°2 from Paris Diderot. Here, we decide to make a profile-profile alignment in order to find a template which matches with a query. Our profile is composed by 20 amino-acids, gap and secondary structure informations. The alignment is a semi-global alignment and we made a dot-product score and a Pearson's correlation score. We will use those differents scores for our benchmark.
@@ -71,14 +67,24 @@ git clone https://github.com/meetU-MasterStudents/2018---2019-Equipe-2.git
 **/!\ CHANGE DIRECTORY FOR DATABASE: in *pipeline_final.sh***
 
 ``` ruby
-##### A changer en fonction de l'emplacement de uniref50.fasta ou autre base de donnees #######
 DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
+```
+
+**/!\ CHANGE DIRECTORY FOR DATABASE: in *src/align_pssm.py***
+
+``` ruby
+/home/madeleine/Documents/2018---2019-partage/Data/HOMSTRAD/
 ```
 
 **Lauch from directory : *2018---2019-Equipe-2***
 ``` ruby
 ./pipeline_final.sh Query.fasta
 ```
+
+### WARNING
+
+We had some trouble with DSSP, so we use psipred to obtain secondary structure on templates. It's working, but we have less accuracy. We will
+try to fix that soon
 
 ## Authors
 
