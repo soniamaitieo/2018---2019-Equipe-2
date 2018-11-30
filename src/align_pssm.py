@@ -269,7 +269,7 @@ def run_alignment_and_make_output(fasta_file):
     iterator = 1
 
     dico_psipred[name_query] = psipred_for_foldrec(pssm1)
-    for elem in glob.glob(CWD + "/data/pssm_templates_new/*.aamtx"):
+    for elem in glob.glob(CWD + "/data/data_test/rep_pssm_test/test/*aamtx"):
         print("template number :" + str(iterator))
         iterator += 1
         name_fasta2, seq2, pssm2 = read_pssm(elem)
