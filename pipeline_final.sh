@@ -10,11 +10,11 @@ FASTA=$1
 b=$(basename $FASTA)
 name_fasta=${b%.*}
 
-#legacy_blast blastpgp -d $DIR_BD -i $FASTA -j 3 -C ff.chd.ckp -o $name_fasta.blast_out;
-#$DIR_CURRENT/src/parser_psiblast_output.py $name_fasta.blast_out $name_fasta.parseout
-#cat $FASTA $name_fasta.parseout > $name_fasta"2.parseout"
-#$DIR_CURRENT/prog/mafft-linux64/mafft.bat $name_fasta"2.parseout" > $name_fasta.aln
-#awk '/^>/{print s? s"\n"$0:$0;s="";next}{s=s sprintf("%s",$0)}END{if(s)print s}' > $name_fasta.mfasta $name_fasta.aln
+legacy_blast blastpgp -d $DIR_BD -i $FASTA -j 3 -C ff.chd.ckp -o $name_fasta.blast_out;
+$DIR_CURRENT/src/parser_psiblast_output.py $name_fasta.blast_out $name_fasta.parseout
+cat $FASTA $name_fasta.parseout > $name_fasta"2.parseout"
+$DIR_CURRENT/prog/mafft-linux64/mafft.bat $name_fasta"2.parseout" > $name_fasta.aln
+awk '/^>/{print s? s"\n"$0:$0;s="";next}{s=s sprintf("%s",$0)}END{if(s)print s}' > $name_fasta.mfasta $name_fasta.aln
 
 $DIR_CURRENT/src/runpsipred_single $1
 
