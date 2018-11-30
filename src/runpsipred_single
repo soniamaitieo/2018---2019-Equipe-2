@@ -10,10 +10,10 @@
 # NOTE: Script modified to put absolute path
 
 # Where the PSIPRED V4 programs have been installed
-set execdir = bin/
+set execdir = /home/soniamai/Bureau/2018---2019-Equipe-2/bin
 
 # Where the PSIPRED V4 data files have been installed
-set datadir = data/psipred
+set datadir = /home/soniamai/Bureau/2018---2019-Equipe-2/data/psipred
 
 set basename = $1:r
 set rootname = $basename:t

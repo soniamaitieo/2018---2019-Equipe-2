@@ -2,8 +2,12 @@
 import numpy as np
 import pandas as pd
 import sys
+import os
+import pathlib
 
-PATH_METAFOLD_LIST="/home/madeleine/Documents/2018---2019-partage/Data/METAFOLD_extended.list"
+CURR_PATH = os.getcwd()
+PATH_METAFOLD_LIST= str(pathlib.Path(CURR_PATH).parent) + "/data/METAFOLD_extended.list"
+
 def get_name(filename):
     with open (filename, 'r') as f:
         line = f.readline()
@@ -49,7 +53,6 @@ def get_cols_todel(seq_list, index_real_query):
 
     #set a list to keep the positions that could not be deleted (the position in which one amine acid exists in sequence)
     seq_ref = seq_list[index_real_query]
-    print(seq_ref)
     cols_keep = []
     for seq_pos in range(len(seq_ref)):
         if seq_ref[seq_pos] != "-":
@@ -216,6 +219,6 @@ if __name__ == "__main__":
 
     with open(sys.argv[3], "w") as output_f:
         print(template_name)
-        output_f.write(template_name.split(".")[0]+"\n")
+        output_f.write(template_name.split("/")[-1].split(".")[0] +"\n")
         output_f.write(cons_seq +"\n")
         pssm_ss2.to_string(output_f, header=False, index=False)
