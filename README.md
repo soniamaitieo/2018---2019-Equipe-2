@@ -37,7 +37,7 @@ Sometimes legacy blast need a perl library. Check if it needs it with running le
 
 **PSIPRED :**
 
-We give you the binary file of psipred, so you don't need to dowload it. But you need to download tcsh
+We give you the binary file of psipred, so you don't need to dowload it. But you need to download csh
 
 `sudo apt-get install csh`
 
