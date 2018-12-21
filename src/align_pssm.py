@@ -158,9 +158,41 @@ def psipred_for_foldrec(pssm):
             list_struc_psipred.append("H")
         else:
             list_struc_psipred.append("E")
-        list_score_psipred.append(max(coil, helix, sheet))
+        if (max(coil, helix, sheet) >=0.9) :
+            list_score_psipred.append(0.9)
+        else :
+            list_score_psipred.append(max(coil, helix, sheet))
     return((list_struc_psipred, list_score_psipred))
 
+def calc_identity(align1, align2) :
+    identity=0
+    coverage=0
+    for i in range(0,len(align1)) :
+        if align1[i] == align2[i] :
+            identity+=1
+    if identity == 0 :
+        return 0
+    return 100*(identity/len(align1))
+
+
+def crop_sequence(seq_query, seq_template) :
+    i=0
+    j=0
+
+    while seq_template[i]=="_" or seq_template[i]=="-" :
+        i=i+1
+    seq_reversed=seq_template[::-1]
+    while seq_reversed[j]=="_" or seq_reversed[j]=="-" :
+        j=j+1
+
+    return(seq_query[i:len(seq_query)-j],seq_template[i:len(seq_template)-j],i,j)
+
+def how_many_res_deleted(seq) :
+    res_deleted=0
+    for i in range(0,len(seq)) :
+        if seq[i]!="-" or seq[i]!="_" :
+            res_deleted+=1
+    return res_deleted
 def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
     """
     Prepare output_file with all alignments prepared before and their score
@@ -213,6 +245,25 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
                     scop_id=f.readline().replace("\n","")
 
 
+                score_normalized = (score - 6.70) / 4.52
+                identity=round(calc_identity(seq[1],seq[0]),2)
+
+                seq_query, seq_template, start, end=crop_sequence(seq[1],seq[0])
+
+
+                psipred_query = psipred_query[start: len(psipred_query)-end]
+                score_psipred_query = score_psipred_query[start:len(score_psipred_query)-end]
+                psipred_template = psipred_template[start: len(psipred_template)-end]
+                score_psipred_template = score_psipred_template[start:len(score_psipred_template)-end]
+
+
+
+
+                real_start=how_many_res_deleted(seq[1][0:start])+1
+
+                query_coverage=round(100 * ( real_start + len(seq_query.replace("_", "").replace("-", ""))  \
+                 - real_start) / len(seq1), 2)
+
                 fillout1.write("{:5}{:9}{:>8}{:>9}{:>8}{:>8}{:>6}{:>8}{:>6}{:>6}{:>9} \
                 {:>9}{:^18}\n".format(str(number_template), round(score, 4), "X", "X", \
                  "X", "X", "X", "X", "X", "X", "X", "X", name_template))
@@ -225,27 +276,29 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
                 fillout2.write("Score : {:^10} | Normalized score : {:^10} | \
                  Query coverage : {:^10} | Identity : {:^10} | Gaps : {:^10}  \
                  | SS Score : {:10} |  Alignment length : {:10} | Corr score : {:10} \n\n" \
-                 .format(score, "X", "X", "X", "X", "X", "X", "X"))
+                 .format(score, score_normalized, str(query_coverage)+"%", str(identity)+"%", "X", "X", "X", "X"))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", seq[1], \
-                 str(len(seq1.replace("_", "").replace("-", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", psipred_query, \
-                 str(len(seq1.replace("_", "").replace("-", "")))))
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", "1", score_psipred_query,  \
-                 str(len(seq1.replace("_", "").replace("-", "")))))
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", real_start, seq_query, \
+                 str(real_start + len(seq_query.replace("_", "").replace("-", "")) - 1 )))
+
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", real_start, psipred_query, \
+                 str(real_start + len(seq_query.replace("_", "").replace("-", "")) -1 )))
+
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Query", real_start, score_psipred_query,  \
+                 str(real_start + len(seq_query.replace("_", "").replace("-", "")) -1 )))
 
                 fillout2.write("\n")
 
-                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", seq[0], \
-                 str(len(seq[0].replace("_", "")))))
+                fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", seq_template, \
+                 str(len(seq[0].replace("_", "").replace("-", "")))))
 
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", psipred_template, \
-                 str(len(seq[0].replace("_", "")))))
+                 str(len(seq[0].replace("_", "").replace("-", "")) )))
 
                 fillout2.write("{:10} {:3} {:} {:>8}\n".format("Template", "1", score_psipred_template, \
-                 str(len(seq[0].replace("_", "")))))
+                 str(len(seq[0].replace("_", "").replace("-", "")) )))
 
                 fillout2.write("\n")
 
