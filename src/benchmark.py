@@ -31,15 +31,6 @@ def find_rank(path_to_foldrec , query_name):
     return((query_name , int (lines[mynum].split(' ')[0])))
 
 
-L = 405*[0]
-for t in range(0 , len(test)):
-    el = test[t][1]
-    for l in range(el, len(L)):
-        L[l] += 1
-        print(L)
-
-
-
 
 def enrich_list(liste_tuple):
     "liste de tuple : liste_tuple = [('Cohesin', 26) , ('Machin', 2) , ('Truc', 10)]"
@@ -51,23 +42,15 @@ def enrich_list(liste_tuple):
     return(L)
 
 
-#-----------------------------------------------
-
-query_name = "Cohesin"
-find_rank(query_name)
- 
 
 #------------------------------------------------ PLOT 
 
-dotprod_list = [10, 12 , 13, 20, 24, 32, 50, 100, 101, 105, 300, 500]
-pearson_list = [10, 50, 100, 101, 105, 300, 400, 450, 475, 500 , 501, 502]
-
-
-def plot_enrichmentcurve(dotprod_list, pearson_list):
+def plot_enrichmentcurve(dotprod_list, dotprod_list2, pearson_list):
     plt.grid(True)
-    plt.plot(dotprod_list, "b", linewidth=0.8, marker="+", label="Dot Product")
-    plt.plot(pearson_list, "g", linewidth=0.8, marker="+", label="Pearson Correlation")
-    plt.axis([1, len(dotprod_list) + 1 , 0, 600])
+    plt.plot(dotprod_list, "b", linewidth=0.8, marker=".", label="Dot Product Uniref50")
+    plt.plot(pearson_list, "g", linewidth=0.8, marker=".", label="Pearson Uniref50")
+    plt.plot(dotprod_list2, "r", linewidth=0.8, marker=".", label="Dot Product Uniref90")
+    plt.axis([1, len(dotprod_list) + 1 , 0, 25])
     plt.xlabel('Rank')
     plt.ylabel('Enrichment')
     plt.legend()    
@@ -78,18 +61,24 @@ def plot_enrichmentcurve(dotprod_list, pearson_list):
 
 #------------------ MAIN
 
-path_to_foldrec_pearson = "/home/sdv/m2bi/stieo/2018---2019-partage/Data/outputs_ORION/"
-path_to_foldrec_dotprod = "/home/sdv/m2bi/stieo/2018---2019-Equipe-2/results/"
+path_to_foldrec_pearson = "/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/foldrec_pearson50/"
+path_to_foldrec_dotprod = "/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/foldrec_dotprod50/"
+path_to_foldrec_dotprod90 = "/home/sdv/m2bi/stieo/2018---2019-Equipe-2/data/foldrec_dotprod90/"
+
 bench_list = "/home/sdv/m2bi/stieo/2018---2019-partage/Data/Benchmark.list"
 
 
 liste_tuple_dotprod = []
 liste_tuple_pearson = []
+liste_tuple_dotprod90 = []
+
 mydico = parse_benchlist(bench_list)
 
 for k in mydico.keys() :
     liste_tuple_dotprod.append(find_rank(path_to_foldrec_dotprod  , k))
+    liste_tuple_dotprod90.append(find_rank(path_to_foldrec_dotprod90  , k))
     liste_tuple_pearson.append(find_rank(path_to_foldrec_pearson , k))
 dotprod_list =  enrich_list(liste_tuple_dotprod) 
+dotprod90_list =  enrich_list(liste_tuple_dotprod90) 
 pearson_list =  enrich_list(liste_tuple_pearson) 
-plot_enrichmentcurve(dotprod_list, pearson_list)
+plot_enrichmentcurve(dotprod_list, dotprod90_list, pearson_list)
