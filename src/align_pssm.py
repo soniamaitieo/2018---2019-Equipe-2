@@ -197,7 +197,7 @@ def make_output(name_output_query, list_score, dico_all, seq1, dico_psipred):
     """
     Prepare output_file with all alignments prepared before and their score
     """
-    name_query=name_output_query.split("_")[0]
+    name_query=name_output_query.split("_query")[0]
 
     with open(name_query+".foldrec1", "w") as fillout1:
         with open(name_query+".foldrec2", "w") as fillout2:
