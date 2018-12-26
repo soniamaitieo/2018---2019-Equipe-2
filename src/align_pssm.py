@@ -193,11 +193,11 @@ def how_many_res_deleted(seq) :
         if seq[i]!="-" or seq[i]!="_" :
             res_deleted+=1
     return res_deleted
-def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
+def make_output(name_output_query, list_score, dico_all, seq1, dico_psipred):
     """
     Prepare output_file with all alignments prepared before and their score
     """
-
+    name_query=name_output_query.split("_")[0]
 
     with open(name_query+".foldrec1", "w") as fillout1:
         with open(name_query+".foldrec2", "w") as fillout2:
@@ -210,7 +210,7 @@ def make_output(name_query, list_score, dico_all, seq1, dico_psipred):
             fillout2.write("*** ALIGNMENTS DETAILS ***\n")
 
             number_template = 1
-            struct_query, score_psipred = dico_psipred[name_query]
+            struct_query, score_psipred = dico_psipred[name_output_query]
 
             for score in list_score:
                 seq = dico_all[score][0][0]
@@ -320,7 +320,7 @@ def run_alignment_and_make_output(fasta_file):
     list_score = []
     dico_psipred = {}
     iterator = 1
-
+    name_query = name_query + "_query"
     dico_psipred[name_query] = psipred_for_foldrec(pssm1)
     for elem in glob.glob(CWD + "/data/pssm_templates_new/*.aamtx"):
         print("template number :" + str(iterator))
