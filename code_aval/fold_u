@@ -1,0 +1,149 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+    Usage:
+        ./fold_u FOLDREC CLUSTAL CCMPRED [--nb_pdb NUM] [--output PATH] [--dssp PATH] [--cpu NUM]
+                                         [--metafold PATH] [--dope PATH] [--benchmark PATH]
+
+    Arguments:
+        FOLDREC                               N profile * profile alignment and
+                                              their corresponding score.
+        CLUSTAL                               Path to the multiple alignment file (clustal format).
+        CCMPRED                               Path to the ccmpred result file.
+
+    Options:
+        -h, --help                            Show this
+        -p NUM, --nb_pdb NUM                  Number of pdb to create
+                                              [default: 10]
+        -o PATH, --output PATH                Path to the directory containing
+                                              the result files (scores and pdb)
+                                              [default: ./results]
+        -a PATH, --dssp PATH                  Path to the dssp software
+                                              binary [default: /usr/bin/mkdssp]
+        -c NUM, --cpu NUM                     Number of cpus to use for parallelisation. By default
+                                              using all available (0).
+                                              [default: 0]
+        -m PATH, --metafold PATH              Path to the metafold.list file
+                                              [default: data/metafold.list]
+        -d PATH, --dope PATH                  Path to the dope.par file
+                                              [default: data/dope.par]
+        -b PATH, --benchmark PATH             Path to the benchmark.list file
+                                              [default: data/benchmark.list]
+"""
+
+# Third-party modules
+from multiprocessing import Pool, cpu_count
+from functools import partial
+from datetime import datetime
+from tqdm import tqdm
+from docopt import docopt
+from schema import Schema, And, Use, SchemaError
+
+# Local modules
+import src.parsing as parsing
+from src.alignment import process, clean_modeller_outputs
+from src.score import Score
+
+DIST_RANGE = [5, 15]
+
+
+def check_args():
+    """
+        Checks and validates the types of inputs parsed by docopt from command line.
+    """
+    schema = Schema({
+        'FOLDREC': Use(open, error='FOLDREC file should be readable'),
+        'CLUSTAL': Use(open, error='CLUSTAL file should be readable'),
+        'CCMPRED': Use(open, error='CCMPRED file should be readable'),
+        '--metafold': Use(open, error='METAFOLD_FILE should be readable'),
+        '--nb_pdb': And(Use(int), lambda n: 1 <= n <= 405,
+                        error='--nb_pdb=NUM should be integer 1 <= N <= 405'),
+        '--dssp': Use(open, error='dssp/mkdssp should be readable'),
+        '--dope': Use(open, error='dope file should be readable'),
+        '--benchmark': Use(open, error='BENCHMARK_FILE should be readable'),
+        '--cpu': And(Use(int), lambda n: 0 <= n <= cpu_count(),
+                     error='--cpus=NUM should be integer 1 <= N <= ' + str(cpu_count())),
+        # The output PATH is created (if not exists) at the end of the program
+        # so we skip the check.
+        object: object})
+    try:
+        schema.validate(ARGUMENTS)
+    except SchemaError as err:
+        exit(err)
+
+
+if __name__ == "__main__":
+
+    START_TIME = datetime.now()
+
+    ### Parse command line
+    ######################
+    ARGUMENTS = docopt(__doc__, version='fold_u 2.0')
+    # Check the types and ranges of the command line arguments parsed by docopt
+    check_args()
+
+    FOLDREC_FILE = ARGUMENTS["FOLDREC"]
+    QUERY_NAME = FOLDREC_FILE.split("/")[-1].split(".")[0]
+    # Multiple alignment file (Clustal format) of the current query
+    CLUSTAL_FILE = ARGUMENTS["CLUSTAL"]
+    # Get the result of ccmpred for the query
+    CCMPRED_FILE = ARGUMENTS["CCMPRED"]
+    # Create the first n pdb templates
+    NB_PDB = int(ARGUMENTS["--nb_pdb"])
+    # METAFOLD file
+    METAFOLD_FILE = ARGUMENTS["--metafold"]
+    # DOPE file
+    DOPE_FILE = ARGUMENTS["--dope"]
+    # BENCHMARK file
+    BENCHMARK_FILE = ARGUMENTS["--benchmark"]
+    # OUTPUT file
+    OUTPUT_PATH = ARGUMENTS["--output"]
+    # DSSP path
+    DSSP_PATH = ARGUMENTS["--dssp"]
+    # Number of cpus for parallelisation
+    NB_PROC = cpu_count() if int(ARGUMENTS["--cpu"]) == 0 else int(ARGUMENTS["--cpu"])
+
+    ### Parse data files
+    ####################
+
+    # Parse Metafold file
+    print("Parsing metafold (" + METAFOLD_FILE + ")")
+    METAFOLD_DICT = parsing.parse_metafold(METAFOLD_FILE)
+    # Parse Foldrec file
+    print("Parsing foldrec (" + FOLDREC_FILE + ")")
+    ALIGNMENT_DICT = parsing.parse_foldrec(FOLDREC_FILE, METAFOLD_DICT)
+    # Set the benchmark of the query
+    print("Parsing benchmark.list (" + BENCHMARK_FILE + ")")
+    parsing.parse_benchmark(QUERY_NAME, BENCHMARK_FILE, ALIGNMENT_DICT)
+    # Parse DOPE file
+    print("Parsing DOPE (" + DOPE_FILE + ")")
+    DOPE_DICT = parsing.parse_dope(DOPE_FILE)
+    # Parse CCMPRED result file
+    print("Parsing CCMPRED result file (" + CCMPRED_FILE + ")")
+    INDEX_LIST = parsing.get_index_list(CLUSTAL_FILE)
+    TOP_COUPLINGS_DICT = parsing.parse_ccmpred_result(CCMPRED_FILE, INDEX_LIST)
+
+    ### Main calculations
+    #####################
+
+    # Parallelization of the main loop
+    with Pool(processes=NB_PROC) as pool:
+        FUNC = partial(process, DIST_RANGE, DOPE_DICT, OUTPUT_PATH, DSSP_PATH, INDEX_LIST,
+                       TOP_COUPLINGS_DICT)
+        # tqdm module enables an ETA progress bar for each alignment processed
+        # imap_unordered can smooth things out by yielding faster-calculated values
+        # ahead of slower-calculated values.
+        print("\n\n" + str(cpu_count()) + " cpus detected, using " + str(NB_PROC))
+        print("\n\nProcessing alignments ...\n")
+        RESULTS = Score([res_ali for res_ali in tqdm(pool.imap_unordered(FUNC,
+                                                                         ALIGNMENT_DICT.values()),
+                                                     total=len(ALIGNMENT_DICT.values()))])
+    # remove useless files generated by MODELLER
+    clean_modeller_outputs(OUTPUT_PATH + "/modeller/")
+
+    ### Results : Score and PDB files
+    #################################
+    RESULTS.write_score(OUTPUT_PATH, NB_PDB, ALIGNMENT_DICT)
+    print("\nThe program ended successfully !\nThe results are stored in " + OUTPUT_PATH)
+    print("\nTotal runtime: {} seconds".format(str(datetime.now() - START_TIME)))

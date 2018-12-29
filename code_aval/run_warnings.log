@@ -1,0 +1,138 @@
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    2891      PHE A 375
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER   11099      THR B1880
+no atoms read before TER record 
+TER   19298      LYS C3073
+no atoms read before TER record 
+TER   22201      THR D3880
+no atoms read before TER record 
+TER   30371      LYS E5073
+no atoms read before TER record 
+TER   33287      THR F5880
+no atoms read before TER record 
+TER   41452      LYS G7073
+no atoms read before TER record 
+TER   44355      THR H7880
+
+  warnings.warn(err)
+
+WARNING:root:Warning! Discarding chain 'B' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'C' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'D' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'E' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'F' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'G' in template '1oela'.atm
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    1221      LYS B 118
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    6304      LYS B 418
+no atoms read before TER record 
+TER    9456      LYS C 418
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    2891      PHE A 375
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER   11099      THR B1880
+no atoms read before TER record 
+TER   19298      LYS C3073
+no atoms read before TER record 
+TER   22201      THR D3880
+no atoms read before TER record 
+TER   30371      LYS E5073
+no atoms read before TER record 
+TER   33287      THR F5880
+no atoms read before TER record 
+TER   41452      LYS G7073
+no atoms read before TER record 
+TER   44355      THR H7880
+
+  warnings.warn(err)
+
+WARNING:root:Warning! Discarding chain 'B' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'C' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'D' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'E' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'F' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'G' in template '1oela'.atm
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    1221      LYS B 118
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    6304      LYS B 418
+no atoms read before TER record 
+TER    9456      LYS C 418
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    2891      PHE A 375
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER   11099      THR B1880
+no atoms read before TER record 
+TER   19298      LYS C3073
+no atoms read before TER record 
+TER   22201      THR D3880
+no atoms read before TER record 
+TER   30371      LYS E5073
+no atoms read before TER record 
+TER   33287      THR F5880
+no atoms read before TER record 
+TER   41452      LYS G7073
+no atoms read before TER record 
+TER   44355      THR H7880
+
+  warnings.warn(err)
+
+WARNING:root:Warning! Discarding chain 'B' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'C' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'D' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'E' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'F' in template '1oela'.atm
+
+WARNING:root:Warning! Discarding chain 'G' in template '1oela'.atm
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    1221      LYS B 118
+
+  warnings.warn(err)
+
+WARNING:py.warnings:/home/madeleine/miniconda3/lib/python3.7/site-packages/Bio/PDB/DSSP.py:192: UserWarning: no atoms read before TER record 
+TER    6304      LYS B 418
+no atoms read before TER record 
+TER    9456      LYS C 418
+
+  warnings.warn(err)
+
