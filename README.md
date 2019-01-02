@@ -59,7 +59,26 @@ pip install pandas
 pip install sys
 pip install os
 pip install glob
+
+# Team 4 dependancies :
+pip install docopt
+pip install numpy
+pip install biopython
+pip install pandas
+pip install schema
+pip install tqdm
+pip install matplotlib
+pip install m2r
+
 ```
+
+
+**Team 4 dependancies :**
+
+
+`sudo apt-get install dssp`
+
+`conda install -c salilab modeller`
 
 ### How to use
 
@@ -92,10 +111,6 @@ DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
 ./pipeline_with_aval.sh Query.fasta OUTPUT_FILE
 ```
 
-### WARNING
-
-We had some trouble with DSSP, so we use psipred to obtain secondary structure on templates. It's working, but we have less accuracy. We will
-try to fix that soon
 
 ## Authors
 
