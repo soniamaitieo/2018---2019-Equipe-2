@@ -106,7 +106,7 @@ DIR_BD=/home/sdv/m2bi/dde_murat/MEET_U/BDD/uniref50.fasta
 ./pipeline_final.sh Query.fasta OUTPUT_FILE
 ```
 
-**Full pipeline UPSTREAM and DOWNSTREAM (launch from directory : *2018---2019-Equipe-2*) ***
+**Full pipeline UPSTREAM and DOWNSTREAM (launch from directory : 2018---2019-Equipe-2) ***
 ``` ruby
 ./pipeline_with_aval.sh Query.fasta OUTPUT_FILE
 ```
